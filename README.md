@@ -445,13 +445,13 @@ AI helped optimize:
 
 ## 🛒 Smart Cart
 
-![Cart](./client/public/screenshots/home2.png)
+![checkout1](./client/public/screenshots/chekcout1.png)
 
 ---
 
 ## 💳 AI Smart Checkout
 
-![checkout1](./client/public/screenshots/chekcout1.png)
+![checkout2](./client/public/screenshots/payment.png)
 
 ---
 
