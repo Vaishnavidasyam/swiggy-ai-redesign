@@ -22,7 +22,7 @@
 ## 🔗 Live Demo
 
 ### Frontend
-[Open Live App](YOUR_VERCEL_LINK)
+[Open Live App](https://swiggy-ai-redesign.vercel.app/)
 
 ### GitHub
 [Repository](https://github.com/Vaishnavidasyam/swiggy-ai-redesign)
