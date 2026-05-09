@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* RESET */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ROOT */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* BODY */
+
+body {
+  background: linear-gradient(to bottom, #f8f9fc, #f4f6fb);
+
+  font-family: Inter, system-ui, sans-serif;
+
+  color: #111827;
+
+  overflow-x: hidden;
+
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* DARK MODE */
+
+.dark body {
+  background: linear-gradient(to bottom, #0b0d11, #12161f);
+
+  color: white;
+}
+
+/* REMOVE SCROLLBAR */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+
+  scrollbar-width: none;
+}
+
+/* SELECTION */
+
+::selection {
+  background: #ff6b57;
+
+  color: white;
+}
+
+/* BUTTON TAP */
+
+button {
+  -webkit-tap-highlight-color: transparent;
+
+  outline: none;
+}
+
+/* INPUTS */
+
+input,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* GLASS */
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+
+  backdrop-filter: blur(22px);
+
+  -webkit-backdrop-filter: blur(22px);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* PREMIUM SHADOW */
+
+.soft-shadow {
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.06),
+    0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* CARD HOVER */
+
+.hover-lift {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* PREMIUM GRADIENT */
+
+.orange-gradient {
+  background: linear-gradient(135deg, #ff7a59, #ff477e);
+}
+
+/* TEXT GRADIENT */
+
+.gradient-text {
+  background: linear-gradient(135deg, #ff7a59, #ff477e);
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+/* BOTTOM SAFE AREA */
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
