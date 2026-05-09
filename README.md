@@ -438,7 +438,7 @@ AI helped optimize:
 
 ## 🏠 Home Experience
 
-![Home](./client/public/screenshots/home1.png)
+![Home](./client/public/screenshots/home1.png)            ![Home](./client/public/screenshots/home2.png)
 
 ---
 
@@ -450,7 +450,7 @@ AI helped optimize:
 
 ## 💳 AI Smart Checkout
 
-![Checkout](./client/public/screenshots/checkout1.png)
+![checkout1](./client/public/screenshots/chekcout1.png)
 
 ---
 
