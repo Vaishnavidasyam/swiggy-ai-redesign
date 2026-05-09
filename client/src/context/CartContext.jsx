@@ -1,144 +1,127 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import api from "../api";
-
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  /* STATES */
+  /* DEMO CART ITEMS */
 
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState([
+    {
+      _id: "1",
+
+      quantity: 1,
+
+      name: "Chicken Biryani",
+
+      imageUrl:
+        "https://images.unsplash.com/photo-1701579231305-d84d8af9a3fd?q=80&w=1200&auto=format&fit=crop",
+
+      price: 299,
+
+      description: "Hyderabadi Dum Biryani",
+    },
+
+    {
+      _id: "2",
+
+      quantity: 2,
+
+      name: "Paneer Butter Masala",
+
+      imageUrl:
+        "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=1200&auto=format&fit=crop",
+
+      price: 249,
+
+      description: "Creamy North Indian Curry",
+    },
+
+    {
+      _id: "3",
+
+      quantity: 1,
+
+      name: "Chocolate Brownie",
+
+      imageUrl:
+        "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=1200&auto=format&fit=crop",
+
+      price: 149,
+
+      description: "Hot Chocolate Dessert",
+    },
+  ]);
 
   const [cartCount, setCartCount] = useState(0);
 
   const [loading, setLoading] = useState(false);
 
-  /* NORMALIZE */
+  /* UPDATE COUNT */
 
-  function normalizeItems(items = []) {
-    return items.map((item) => ({
-      _id: item.menuItemId?._id,
+  useEffect(() => {
+    const count = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-      quantity: item.quantity || 1,
+    setCartCount(count);
+  }, [cartItems]);
 
-      name: item.menuItemId?.name || "Food Item",
+  /* ADD ITEM */
 
-      imageUrl: item.menuItemId?.imageUrl || "",
+  function addToCart(item) {
+    const exists = cartItems.find((cartItem) => cartItem._id === item._id);
 
-      price: item.menuItemId?.price || 0,
+    if (exists) {
+      increaseQty(item._id);
 
-      description: item.menuItemId?.description || "",
-    }));
+      return;
+    }
+
+    setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
   }
 
-  /* FETCH */
+  /* REMOVE ITEM */
 
-  async function fetchCart() {
-    try {
-      setLoading(true);
-
-      const res = await api.get("/cart");
-
-      const items = normalizeItems(res.data.items || []);
-
-      setCartItems(items);
-
-      const count = items.reduce((acc, item) => acc + item.quantity, 0);
-
-      setCartCount(count);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+  function removeFromCart(menuItemId) {
+    setCartItems((prev) => prev.filter((item) => item._id !== menuItemId));
   }
 
-  /* ADD */
+  /* CLEAR CART */
 
-  async function addToCart(menuItemId) {
-    try {
-      await api.post("/cart/add", {
-        menuItemId,
-
-        quantity: 1,
-      });
-
-      await fetchCart();
-    } catch (err) {
-      console.log(err);
-    }
+  function clearCart() {
+    setCartItems([]);
   }
 
-  /* REMOVE */
+  /* INCREASE QUANTITY */
 
-  async function removeFromCart(menuItemId) {
-    try {
-      await api.delete(`/cart/${menuItemId}`);
+  function increaseQty(menuItemId) {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item._id === menuItemId
+          ? {
+              ...item,
 
-      await fetchCart();
-    } catch (err) {
-      console.log(err);
-    }
+              quantity: item.quantity + 1,
+            }
+          : item,
+      ),
+    );
   }
 
-  /* CLEAR */
+  /* DECREASE QUANTITY */
 
-  async function clearCart() {
-    try {
-      await api.delete("/cart/clear");
+  function decreaseQty(menuItemId) {
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item._id === menuItemId
+            ? {
+                ...item,
 
-      setCartItems([]);
-
-      setCartCount(0);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  /* INCREASE */
-
-  async function increaseQty(menuItemId) {
-    try {
-      const existing = cartItems.find((item) => item._id === menuItemId);
-
-      if (!existing) return;
-
-      await api.put("/cart/update", {
-        menuItemId,
-
-        quantity: existing.quantity + 1,
-      });
-
-      await fetchCart();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  /* DECREASE */
-
-  async function decreaseQty(menuItemId) {
-    try {
-      const existing = cartItems.find((item) => item._id === menuItemId);
-
-      if (!existing) return;
-
-      if (existing.quantity === 1) {
-        await removeFromCart(menuItemId);
-
-        return;
-      }
-
-      await api.put("/cart/update", {
-        menuItemId,
-
-        quantity: existing.quantity - 1,
-      });
-
-      await fetchCart();
-    } catch (err) {
-      console.log(err);
-    }
+                quantity: item.quantity - 1,
+              }
+            : item,
+        )
+        .filter((item) => item.quantity > 0),
+    );
   }
 
   /* TOTALS */
@@ -152,12 +135,6 @@ export function CartProvider({ children }) {
   const taxes = Math.round(subtotal * 0.05);
 
   const grandTotal = Number(subtotal) + Number(taxes) + Number(deliveryFee);
-
-  /* LOAD */
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
 
   return (
     <CartContext.Provider
@@ -185,8 +162,6 @@ export function CartProvider({ children }) {
         increaseQty,
 
         decreaseQty,
-
-        fetchCart,
       }}
     >
       {children}
