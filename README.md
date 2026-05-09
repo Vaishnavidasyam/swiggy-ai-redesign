@@ -1,4 +1,4 @@
-# 🍔 Swiggy Reimagined
+# 🍔 Swiggy Flow
 
 ### AI-Powered Food Delivery Experience
 
