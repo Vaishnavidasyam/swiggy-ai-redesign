@@ -410,6 +410,7 @@ AI helped discover:
 ```text
 client/public/screenshots/home1.png
 client/public/screenshots/home2.png
+client/public/screenshots/home3.png
 ```
 
 ---
