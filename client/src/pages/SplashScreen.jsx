@@ -1,197 +1,188 @@
-// src/pages/SplashScreen.jsx
+// src/pages/Welcome.jsx
 
 import { motion } from "framer-motion";
 
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, Sparkles, Star } from "lucide-react";
 
-import { Sparkles, ArrowRight, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export default function SplashScreen() {
-  const navigate = useNavigate();
-
+export default function Welcome() {
   return (
-    <div className="min-h-screen bg-[#fff8f5] overflow-hidden relative flex items-center justify-center px-4 sm:px-6 lg:px-10">
-      {/* BACKGROUND */}
+    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-[#fff8f5] via-[#fffaf7] to-[#ffe9e2]">
+      {/* CONTAINER */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,115,0,0.14),transparent_40%)]" />
+      <div className="w-full max-w-[1400px] mx-auto min-h-screen flex items-center px-5 sm:px-8 lg:px-16 py-10">
+        {/* GRID */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,0,100,0.08),transparent_40%)]" />
+        <div className="grid lg:grid-cols-2 gap-14 items-center w-full">
+          {/* LEFT */}
 
-      {/* MAIN CONTAINER */}
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.7,
+            }}
+            className="order-2 lg:order-1"
+          >
+            {/* BADGE */}
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-        {/* LEFT CONTENT */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.6,
-          }}
-          className="text-center lg:text-left"
-        >
-          {/* BADGE */}
-
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-orange-100 shadow-sm">
-            <Sparkles size={15} className="text-orange-500" />
-
-            <span className="text-sm font-semibold text-gray-700">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-orange-100 shadow-sm text-[#111827] text-xs sm:text-sm font-semibold">
+              <Sparkles size={16} className="text-orange-500" />
               AI-Powered Food Discovery
-            </span>
-          </div>
-
-          {/* TITLE */}
-
-          <h1 className="mt-7 text-5xl sm:text-6xl xl:text-7xl font-black leading-[1.02] tracking-[-2px] text-[#111827]">
-            Discover food
-            <br />
-            <span className="text-orange-500">you'll actually love.</span>
-          </h1>
-
-          {/* SUBTITLE */}
-
-          <p className="mt-7 text-base sm:text-lg xl:text-xl leading-8 text-gray-600 max-w-2xl mx-auto lg:mx-0">
-            Personalized restaurant recommendations, smarter ordering, and
-            AI-powered discovery tailored to your taste and cravings.
-          </p>
-
-          {/* CTA */}
-
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            {/* PRIMARY */}
-
-            <button
-              onClick={() => navigate("/home")}
-              className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3"
-            >
-              Explore Food
-              <ArrowRight size={20} />
-            </button>
-
-            {/* SECONDARY */}
-
-            <button
-              onClick={() => navigate("/auth")}
-              className="bg-white border border-gray-200 text-gray-800 px-8 py-4 rounded-2xl font-semibold text-lg shadow-sm hover:bg-gray-50 transition-all duration-300"
-            >
-              Sign In
-            </button>
-          </div>
-
-          {/* STATS */}
-
-          <div className="mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto lg:mx-0">
-            {/* CARD */}
-
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111827]">
-                10k+
-              </h2>
-
-              <p className="text-sm text-gray-500 mt-2">Restaurants</p>
             </div>
 
-            {/* CARD */}
+            {/* HEADING */}
 
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111827]">
-                AI
-              </h2>
+            <h1 className="mt-6 text-[54px] leading-[0.95] tracking-[-3px] font-black text-[#0f172a] sm:text-[72px] lg:text-[88px]">
+              Discover food
+              <br />
+              <span className="bg-gradient-to-r from-orange-500 via-[#ff6b57] to-pink-500 bg-clip-text text-transparent">
+                you'll actually
+              </span>
+              <br />
+              love.
+            </h1>
 
-              <p className="text-sm text-gray-500 mt-2">Personalized Feed</p>
+            {/* DESC */}
+
+            <p className="mt-6 max-w-xl text-[17px] sm:text-[19px] leading-8 text-gray-600">
+              Personalized restaurant recommendations, smarter ordering, and
+              AI-powered discovery tailored to your taste and cravings.
+            </p>
+
+            {/* BUTTONS */}
+
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              {/* EXPLORE */}
+
+              <Link to="/home">
+                <button className="w-full sm:w-auto h-[62px] px-8 rounded-[22px] bg-gradient-to-r from-orange-500 to-pink-500 text-white font-black text-lg shadow-[0_10px_30px_rgba(255,110,80,0.3)] hover:scale-[1.02] transition-all duration-300">
+                  <div className="flex items-center justify-center gap-3">
+                    Explore Food
+                    <ArrowRight size={22} />
+                  </div>
+                </button>
+              </Link>
+
+              {/* SIGN IN */}
+
+              <Link to="/auth">
+                <button className="w-full sm:w-auto h-[62px] px-8 rounded-[22px] bg-white border border-gray-200 text-[#111827] font-black text-lg shadow-sm hover:bg-gray-50 transition-all duration-300">
+                  Sign In
+                </button>
+              </Link>
             </div>
 
-            {/* CARD */}
+            {/* STATS */}
 
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111827]">
-                24/7
-              </h2>
+            <div className="grid grid-cols-3 gap-3 sm:gap-5 mt-10">
+              <StatCard title="10k+" subtitle="Restaurants" />
 
-              <p className="text-sm text-gray-500 mt-2">Fast Delivery</p>
+              <StatCard title="AI" subtitle="Personalized Feed" />
+
+              <StatCard title="24/7" subtitle="Fast Delivery" />
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* RIGHT SIDE */}
+          {/* RIGHT */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            scale: 0.94,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          transition={{
-            duration: 0.7,
-          }}
-          className="relative hidden lg:flex justify-center"
-        >
-          {/* MAIN CARD */}
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.9,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.7,
+            }}
+            className="relative order-1 lg:order-2 hidden md:flex justify-center"
+          >
+            {/* MAIN CARD */}
 
-          <div className="relative bg-white rounded-[32px] p-5 shadow-2xl border border-gray-100 w-[480px]">
-            {/* IMAGE */}
+            <div className="relative">
+              {/* BG CARD */}
 
-            <img
-              src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"
-              alt="Food"
-              className="w-full h-[360px] object-cover rounded-[26px]"
-            />
+              <div className="absolute inset-0 translate-x-5 translate-y-5 rounded-[42px] bg-white/70 blur-xl" />
 
-            {/* FLOATING CARD */}
+              {/* IMAGE CARD */}
 
-            <div className="absolute bottom-10 left-[-35px] bg-white rounded-3xl p-5 shadow-xl border border-gray-100 w-[240px]">
-              {/* TOP */}
+              <div className="relative bg-white p-5 rounded-[42px] shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
+                <img
+                  src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop"
+                  alt="Food"
+                  className="w-full max-w-[560px] h-[500px] object-cover rounded-[34px]"
+                />
 
-              <div className="flex items-center gap-3">
-                <div className="h-14 w-14 rounded-2xl bg-orange-100 flex items-center justify-center text-2xl">
-                  🍔
+                {/* FAST DELIVERY */}
+
+                <div className="absolute top-10 right-0 translate-x-10 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-4 rounded-[20px] shadow-xl">
+                  <div className="flex items-center gap-2 font-black">
+                    Fast Delivery ⚡
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="font-black text-[#111827]">AI Recommended</h3>
+                {/* AI CARD */}
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    Based on your taste
-                  </p>
+                <div className="absolute -left-10 bottom-10 bg-white rounded-[28px] p-5 shadow-[0_15px_40px_rgba(0,0,0,0.08)] w-[280px]">
+                  <div className="flex items-start gap-4">
+                    <div className="h-14 w-14 rounded-2xl bg-[#fff2e9] flex items-center justify-center text-2xl">
+                      🍔
+                    </div>
+
+                    <div>
+                      <h3 className="font-black text-xl text-[#111827]">
+                        AI Recommended
+                      </h3>
+
+                      <p className="text-sm text-gray-500 mt-1">
+                        Based on your taste
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* RATING */}
+
+                  <div className="flex items-center justify-between mt-5">
+                    <div className="flex items-center gap-1 text-orange-500">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <Star key={i} size={16} fill="currentColor" />
+                      ))}
+                    </div>
+
+                    <h3 className="font-black text-[#111827]">4.9</h3>
+                  </div>
                 </div>
               </div>
-
-              {/* RATING */}
-
-              <div className="mt-5 flex items-center justify-between">
-                <div className="flex items-center gap-1 text-orange-500">
-                  <Star size={16} fill="currentColor" />
-
-                  <Star size={16} fill="currentColor" />
-
-                  <Star size={16} fill="currentColor" />
-
-                  <Star size={16} fill="currentColor" />
-
-                  <Star size={16} fill="currentColor" />
-                </div>
-
-                <span className="text-sm font-bold text-gray-700">4.9</span>
-              </div>
             </div>
-
-            {/* DELIVERY */}
-
-            <div className="absolute top-8 right-[-20px] bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-3 rounded-2xl shadow-lg">
-              <p className="text-sm font-bold">Fast Delivery ⚡</p>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+/* STAT CARD */
+
+function StatCard({ title, subtitle }) {
+  return (
+    <div className="rounded-[24px] bg-white border border-gray-100 shadow-sm px-4 py-5 sm:p-6">
+      <h2 className="text-2xl sm:text-4xl font-black text-[#0f172a]">
+        {title}
+      </h2>
+
+      <p className="text-gray-500 text-sm sm:text-base mt-2 leading-6">
+        {subtitle}
+      </p>
     </div>
   );
 }
