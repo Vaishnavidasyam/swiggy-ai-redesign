@@ -26,11 +26,7 @@ export default function Orders() {
 
   const { darkMode } = useThemeStore();
 
-  /* ORDER */
-
   const order = JSON.parse(localStorage.getItem("latestOrder")) || {};
-
-  /* DELIVERY STEPS */
 
   const steps = [
     {
@@ -76,15 +72,9 @@ export default function Orders() {
     },
   ];
 
-  /* ACTIVE STEP */
-
   const [activeStep, setActiveStep] = useState(0);
 
-  /* RIDER POSITION */
-
   const [riderPosition, setRiderPosition] = useState(12);
-
-  /* AUTO TRANSITION */
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -100,8 +90,6 @@ export default function Orders() {
     return () => clearInterval(interval);
   }, []);
 
-  /* MAP MOVEMENT */
-
   useEffect(() => {
     if (activeStep < 3) return;
 
@@ -116,13 +104,11 @@ export default function Orders() {
     return () => clearInterval(interval);
   }, [activeStep]);
 
-  /* MAP SHOW */
-
   const showMap = activeStep >= 3 && activeStep < 5;
 
   return (
     <div
-      className={`min-h-screen pb-[180px] transition-all duration-500 ${
+      className={`min-h-screen pb-[260px] md:pb-[180px] transition-all duration-500 ${
         darkMode
           ? "bg-gradient-to-br from-[#0b1220] via-[#111827] to-[#151d2d] text-white"
           : "bg-gradient-to-br from-[#fff7f2] via-[#fdfdfd] to-[#f5f7fb]"
@@ -152,21 +138,15 @@ export default function Orders() {
                   duration: 0.4,
                 }}
               >
-                {/* BADGE */}
-
                 <div
                   className={`inline-flex items-center gap-2 bg-gradient-to-r ${steps[activeStep].color} text-white px-4 py-2 rounded-full text-xs font-black shadow-lg`}
                 >
                   ✨ LIVE DELIVERY STATUS
                 </div>
 
-                {/* TITLE */}
-
                 <h1 className="text-[40px] md:text-[52px] leading-none font-black tracking-tight mt-4">
                   {steps[activeStep].title}
                 </h1>
-
-                {/* SUBTITLE */}
 
                 <p
                   className={`mt-3 text-sm max-w-md leading-7 ${
@@ -207,7 +187,7 @@ export default function Orders() {
           {/* LEFT */}
 
           <div className="space-y-4">
-            {/* AI DELIVERY */}
+            {/* AI CARD */}
 
             <div
               className={`rounded-[32px] overflow-hidden bg-gradient-to-r ${steps[activeStep].color} p-5 text-white relative shadow-[0_20px_50px_rgba(0,0,0,0.12)]`}
@@ -248,8 +228,6 @@ export default function Orders() {
                   </motion.div>
                 </AnimatePresence>
 
-                {/* STATS */}
-
                 <div className="flex flex-wrap gap-3 mt-5">
                   <MiniStat title="ETA" value="28 mins" />
 
@@ -282,8 +260,6 @@ export default function Orders() {
                   }}
                 >
                   <GlassCard darkMode={darkMode}>
-                    {/* HEADER */}
-
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h2 className="text-2xl font-black">Live Map</h2>
@@ -298,38 +274,8 @@ export default function Orders() {
                       </div>
                     </div>
 
-                    {/* MAP */}
-
                     <div className="relative h-[240px] rounded-[28px] overflow-hidden bg-gradient-to-br from-[#eef5ff] via-[#f7fbff] to-[#edf3f8]">
-                      {/* GRID */}
-
-                      <div className="absolute inset-0 opacity-30">
-                        {Array.from({
-                          length: 7,
-                        }).map((_, i) => (
-                          <div key={i}>
-                            <div
-                              className="absolute h-full w-[1px] bg-[#d5deea]"
-                              style={{
-                                left: `${i * 16}%`,
-                              }}
-                            />
-
-                            <div
-                              className="absolute w-full h-[1px] bg-[#d5deea]"
-                              style={{
-                                top: `${i * 16}%`,
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* ROUTE */}
-
                       <div className="absolute left-14 right-14 top-1/2 h-2 rounded-full bg-gradient-to-r from-orange-300 to-pink-400" />
-
-                      {/* STORE */}
 
                       <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20">
                         <div className="h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 border-[4px] border-white shadow-xl flex items-center justify-center text-white">
@@ -337,15 +283,11 @@ export default function Orders() {
                         </div>
                       </div>
 
-                      {/* HOME */}
-
                       <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20">
                         <div className="h-14 w-14 rounded-full bg-green-500 border-[4px] border-white shadow-xl flex items-center justify-center text-white">
                           <Home size={18} />
                         </div>
                       </div>
-
-                      {/* RIDER */}
 
                       <motion.div
                         animate={{
@@ -387,8 +329,6 @@ export default function Orders() {
                 </div>
               </div>
 
-              {/* STEPS */}
-
               <div className="mt-7">
                 {steps.map((step, index) => {
                   const completed = index <= activeStep;
@@ -396,23 +336,10 @@ export default function Orders() {
                   const current = index === activeStep;
 
                   return (
-                    <motion.div
+                    <div
                       key={index}
-                      initial={{
-                        opacity: 0,
-                        x: -20,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        x: 0,
-                      }}
-                      transition={{
-                        delay: index * 0.05,
-                      }}
                       className="flex gap-4 relative pb-4 last:pb-0"
                     >
-                      {/* LINE */}
-
                       {index !== steps.length - 1 && (
                         <div
                           className={`absolute left-[17px] top-10 w-[3px] h-full rounded-full ${
@@ -423,19 +350,15 @@ export default function Orders() {
                         />
                       )}
 
-                      {/* ICON */}
-
                       <div
                         className={`relative z-10 h-9 w-9 rounded-full flex items-center justify-center shadow-md ${
                           completed
                             ? `bg-gradient-to-r ${step.color} text-white`
                             : "bg-[#eef3f8] text-gray-500"
-                        } ${current ? "animate-pulse" : ""}`}
+                        }`}
                       >
                         {step.icon}
                       </div>
-
-                      {/* TEXT */}
 
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -458,7 +381,7 @@ export default function Orders() {
                           {step.subtitle}
                         </p>
                       </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
@@ -483,45 +406,65 @@ export default function Orders() {
 
               <div className="space-y-3 mt-5">
                 {order.items?.map((item, index) => (
-                  <motion.div
+                  <div
                     key={index}
-                    initial={{
-                      opacity: 0,
-                      y: 15,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      delay: index * 0.05,
-                    }}
-                    className="bg-gradient-to-br from-white to-[#fff7f3] border border-black/[0.04] rounded-[24px] p-3.5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition-all duration-300"
+                    className="
+                      bg-gradient-to-br
+                      from-white
+                      to-[#fff7f3]
+                      border
+                      border-black/[0.04]
+                      rounded-[24px]
+                      p-3.5
+                      flex
+                      items-center
+                      gap-4
+                    "
                   >
-                    {/* IMAGE */}
-
                     <img
                       src={item.imageUrl}
                       alt={item.name}
-                      className="h-20 w-20 rounded-2xl object-cover"
+                      className="
+                        h-20
+                        w-20
+                        md:h-24
+                        md:w-24
+                        rounded-2xl
+                        object-cover
+                        shrink-0
+                      "
                     />
 
-                    {/* INFO */}
+                    <div className="flex-1 min-w-0">
+                      <h3
+                        className="
+                          font-black
+                          text-lg
+                          md:text-xl
+                          leading-tight
+                          break-words
+                        "
+                      >
+                        {item.name}
+                      </h3>
 
-                    <div className="flex-1">
-                      <h3 className="font-black text-lg">{item.name}</h3>
-
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-gray-500 mt-2">
                         Qty {item.qty || item.quantity}
                       </p>
                     </div>
 
-                    {/* PRICE */}
-
-                    <h2 className="text-xl font-black text-[#ff6b57]">
+                    <h2
+                      className="
+                        text-xl
+                        md:text-2xl
+                        font-black
+                        text-[#ff6b57]
+                        shrink-0
+                      "
+                    >
                       ₹{item.price}
                     </h2>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </GlassCard>
@@ -530,8 +473,6 @@ export default function Orders() {
           {/* RIGHT */}
 
           <div className="space-y-4 xl:sticky xl:top-24 h-fit">
-            {/* ETA */}
-
             <InfoCard
               darkMode={darkMode}
               icon={<Clock3 size={18} />}
@@ -539,16 +480,12 @@ export default function Orders() {
               value="28-35 mins"
             />
 
-            {/* PAYMENT */}
-
             <InfoCard
               darkMode={darkMode}
               icon={<ShieldCheck size={18} />}
               title="Payment Method"
               value={order.payment || "Google Pay"}
             />
-
-            {/* INSIGHTS */}
 
             <GlassCard darkMode={darkMode}>
               <div className="flex items-center gap-3">
@@ -578,40 +515,142 @@ export default function Orders() {
         </div>
       </div>
 
-      {/* FLOATING CTA */}
+      {/* RESPONSIVE CTA */}
 
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-50">
-        <button
-          onClick={() => navigate("/home")}
-          className="w-full bg-[#111827] text-white rounded-[24px] px-5 py-4 shadow-[0_15px_45px_rgba(0,0,0,0.18)]"
-        >
-          <div className="flex items-center justify-between">
-            {/* LEFT */}
+      <div
+        className="
+          fixed
+          left-0
+          right-0
+          bottom-[110px]
+          md:bottom-6
+          z-40
+          flex
+          justify-center
+          px-3
+          md:px-6
+          pointer-events-none
+        "
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
+      >
+        <div className="w-full max-w-[720px] pointer-events-auto">
+          <motion.button
+            whileTap={{ scale: 0.985 }}
+            onClick={() => navigate("/home")}
+            className="
+              relative
+              overflow-hidden
+              w-full
+              rounded-[24px]
+              md:rounded-[30px]
+              bg-[#0f172a]/95
+              backdrop-blur-2xl
+              border
+              border-white/10
+              shadow-[0_20px_60px_rgba(0,0,0,0.35)]
+            "
+          >
+            <div
+              className={`
+                absolute
+                inset-0
+                opacity-20
+                bg-gradient-to-r
+                ${steps[activeStep].color}
+              `}
+            />
 
-            <div className="flex items-center gap-4">
-              <div
-                className={`h-12 w-12 rounded-2xl bg-gradient-to-r ${steps[activeStep].color} flex items-center justify-center`}
-              >
-                {steps[activeStep].icon}
+            <div
+              className="
+                relative
+                flex
+                items-center
+                justify-between
+                gap-3
+                px-4
+                md:px-6
+                py-4
+                md:py-5
+              "
+            >
+              {/* LEFT */}
+
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className={`
+                    h-12
+                    w-12
+                    md:h-14
+                    md:w-14
+                    shrink-0
+                    rounded-2xl
+                    bg-gradient-to-r
+                    ${steps[activeStep].color}
+                    flex
+                    items-center
+                    justify-center
+                    shadow-lg
+                    text-white
+                  `}
+                >
+                  {steps[activeStep].icon}
+                </div>
+
+                <div className="min-w-0 text-left">
+                  <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wide">
+                    Delivery Status
+                  </p>
+
+                  <h2
+                    className="
+                      text-sm
+                      md:text-lg
+                      font-black
+                      text-white
+                      truncate
+                      mt-1
+                    "
+                  >
+                    {steps[activeStep].title}
+                  </h2>
+                </div>
               </div>
 
-              <div className="text-left">
-                <p className="text-xs text-gray-400">Delivery Status</p>
+              {/* RIGHT */}
 
-                <h2 className="font-bold text-sm mt-1">
-                  {steps[activeStep].title}
-                </h2>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="hidden sm:block text-right">
+                  <p className="text-[10px] text-gray-400">Continue browsing</p>
+
+                  <h3 className="text-sm md:text-base font-bold text-white mt-1">
+                    Browse Food
+                  </h3>
+                </div>
+
+                <div
+                  className="
+                    h-11
+                    w-11
+                    md:h-12
+                    md:w-12
+                    rounded-2xl
+                    bg-white/10
+                    border
+                    border-white/10
+                    flex
+                    items-center
+                    justify-center
+                    text-white
+                  "
+                >
+                  <ChevronRight size={20} />
+                </div>
               </div>
             </div>
-
-            {/* RIGHT */}
-
-            <div className="flex items-center gap-2 text-sm font-semibold">
-              Browse Food
-              <ChevronRight size={18} />
-            </div>
-          </div>
-        </button>
+          </motion.button>
+        </div>
       </div>
     </div>
   );
