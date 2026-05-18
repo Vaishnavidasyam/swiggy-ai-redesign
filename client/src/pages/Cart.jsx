@@ -66,7 +66,10 @@ export default function Cart() {
   /* TOTALS */
 
   const subtotal = useMemo(() => {
-    return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    return cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
   }, [cartItems]);
 
   const taxes = Math.round(subtotal * 0.05);
@@ -79,7 +82,10 @@ export default function Cart() {
 
   /* AI */
 
-  const aiSuggestions = getAISuggestions(cartItems, recommendations);
+  const aiSuggestions = getAISuggestions(
+    cartItems,
+    recommendations,
+  );
 
   /* TOAST */
 
@@ -97,21 +103,31 @@ export default function Cart() {
     return (
       <div
         className={`min-h-screen flex flex-col items-center justify-center px-6 text-center ${
-          darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
+          darkMode
+            ? "bg-[#0b1220] text-white"
+            : "bg-[#f5f7fb] text-black"
         }`}
       >
         <div className="h-28 w-28 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-sm">
-          <ShoppingBag size={44} className="text-white" />
+          <ShoppingBag
+            size={44}
+            className="text-white"
+          />
         </div>
 
-        <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
+        <h1 className="text-4xl font-black mt-8">
+          Cart Empty
+        </h1>
 
         <p
           className={`mt-4 text-sm leading-7 max-w-[300px] ${
-            darkMode ? "text-gray-400" : "text-gray-500"
+            darkMode
+              ? "text-gray-400"
+              : "text-gray-500"
           }`}
         >
-          Add delicious food from nearby restaurants and continue checkout.
+          Add delicious food from nearby restaurants
+          and continue checkout.
         </p>
 
         <Link to="/home">
@@ -125,8 +141,10 @@ export default function Cart() {
 
   return (
     <div
-      className={`min-h-screen pb-[220px] transition-all duration-300 ${
-        darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
+      className={`min-h-screen pb-[320px] md:pb-[220px] transition-all duration-300 ${
+        darkMode
+          ? "bg-[#0b1220] text-white"
+          : "bg-[#f5f7fb] text-black"
       }`}
     >
       {/* TOAST */}
@@ -168,33 +186,38 @@ export default function Cart() {
 
         <div
           className={`sticky top-0 z-40 pt-6 pb-5 ${
-            darkMode ? "bg-[#0b1220]/95" : "bg-[#f5f7fb]/95"
+            darkMode
+              ? "bg-[#0b1220]/95"
+              : "bg-[#f5f7fb]/95"
           } backdrop-blur-sm`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl md:text-5xl font-black leading-none">
+              <h1 className="text-3xl md:text-5xl font-black leading-none">
                 Your Cart
               </h1>
 
               <p
                 className={`text-sm mt-3 ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
+                  darkMode
+                    ? "text-gray-400"
+                    : "text-gray-500"
                 }`}
               >
-                {cartItems.length} items ready for checkout
+                {cartItems.length} items ready for
+                checkout
               </p>
             </div>
 
-            <div className="h-16 w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-sm">
-              <ShoppingBag size={28} />
+            <div className="h-14 w-14 md:h-16 md:w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-sm">
+              <ShoppingBag size={26} />
             </div>
           </div>
         </div>
 
         {/* MAIN */}
 
-        <div className="grid xl:grid-cols-[1.4fr_0.5fr] gap-8 mt-6">
+        <div className="grid xl:grid-cols-[1.4fr_0.5fr] gap-6 mt-6">
           {/* LEFT */}
 
           <div>
@@ -227,32 +250,42 @@ export default function Cart() {
                     <img
                       src={item.imageUrl}
                       alt={item.name}
-                      className="w-full lg:w-[320px] h-[260px] object-cover"
+                      className="
+                        w-full
+                        lg:w-[320px]
+                        h-[220px]
+                        sm:h-[260px]
+                        object-cover
+                      "
                     />
 
                     {/* CONTENT */}
 
-                    <div className="flex-1 p-7">
-                      <div className="flex justify-between gap-5">
-                        <div>
+                    <div className="flex-1 p-5 sm:p-7">
+                      <div className="flex justify-between gap-4">
+                        <div className="flex-1">
                           <div className="inline-flex bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black mb-4">
                             AI Recommended
                           </div>
 
-                          <h2 className="text-3xl font-black leading-tight">
+                          <h2 className="text-[34px] sm:text-3xl font-black leading-tight">
                             {item.name}
                           </h2>
 
                           <p
                             className={`text-sm mt-3 leading-7 ${
-                              darkMode ? "text-gray-400" : "text-gray-500"
+                              darkMode
+                                ? "text-gray-400"
+                                : "text-gray-500"
                             }`}
                           >
-                            Freshly prepared using premium ingredients &
-                            optimized for fast delivery.
+                            Freshly prepared using
+                            premium ingredients &
+                            optimized for fast
+                            delivery.
                           </p>
 
-                          <h3 className="mt-6 text-4xl font-black text-[#ff6b57]">
+                          <h3 className="mt-5 text-3xl sm:text-4xl font-black text-[#ff6b57]">
                             ₹{item.price}
                           </h3>
                         </div>
@@ -261,11 +294,15 @@ export default function Cart() {
 
                         <button
                           onClick={() => {
-                            removeFromCart(item._id);
+                            removeFromCart(
+                              item._id,
+                            );
 
-                            showToast(`${item.name} removed`);
+                            showToast(
+                              `${item.name} removed`,
+                            );
                           }}
-                          className="h-12 w-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center"
+                          className="h-12 w-12 min-w-[48px] rounded-2xl bg-red-50 text-red-500 flex items-center justify-center"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -273,15 +310,19 @@ export default function Cart() {
 
                       {/* FOOTER */}
 
-                      <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+                      <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
                         {/* QUANTITY */}
 
-                        <div className="flex items-center gap-4 bg-[#fff4ef] px-4 py-3 rounded-2xl">
+                        <div className="flex items-center gap-3 bg-[#fff4ef] px-3 py-3 rounded-2xl">
                           <button
                             onClick={() => {
-                              decreaseQty(item._id);
+                              decreaseQty(
+                                item._id,
+                              );
 
-                              showToast("Quantity updated");
+                              showToast(
+                                "Quantity updated",
+                              );
                             }}
                             className="h-10 w-10 rounded-xl bg-white text-[#ff6b57] flex items-center justify-center shadow-sm"
                           >
@@ -294,9 +335,13 @@ export default function Cart() {
 
                           <button
                             onClick={() => {
-                              increaseQty(item._id);
+                              increaseQty(
+                                item._id,
+                              );
 
-                              showToast("Quantity updated");
+                              showToast(
+                                "Quantity updated",
+                              );
                             }}
                             className="h-10 w-10 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-sm"
                           >
@@ -306,9 +351,23 @@ export default function Cart() {
 
                         {/* TOTAL */}
 
-                        <h2 className="text-4xl font-black">
-                          ₹{item.price * item.quantity}
-                        </h2>
+                        <div className="text-right">
+                          <p
+                            className={`text-xs mb-1 ${
+                              darkMode
+                                ? "text-gray-400"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            Total
+                          </p>
+
+                          <h2 className="text-3xl md:text-4xl font-black">
+                            ₹
+                            {item.price *
+                              item.quantity}
+                          </h2>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -328,21 +387,29 @@ export default function Cart() {
               >
                 {/* HEADER */}
 
-                <div className="flex items-center justify-between p-6 border-b border-white/5">
+                <div className="flex items-center justify-between p-5 border-b border-white/5">
                   <div className="flex items-center gap-4">
                     <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-md">
-                      <Sparkles size={22} className="text-white" />
+                      <Sparkles
+                        size={22}
+                        className="text-white"
+                      />
                     </div>
 
                     <div>
-                      <h2 className="text-2xl font-black">Smart Insights</h2>
+                      <h2 className="text-xl md:text-2xl font-black">
+                        Smart Insights
+                      </h2>
 
                       <p
                         className={`text-sm mt-1 ${
-                          darkMode ? "text-gray-400" : "text-gray-500"
+                          darkMode
+                            ? "text-gray-400"
+                            : "text-gray-500"
                         }`}
                       >
-                        AI-powered meal intelligence
+                        AI-powered meal
+                        intelligence
                       </p>
                     </div>
                   </div>
@@ -355,7 +422,7 @@ export default function Cart() {
                 {/* FEATURED */}
 
                 {aiSuggestions[0] && (
-                  <div className="p-5">
+                  <div className="p-4 sm:p-5">
                     <motion.div
                       initial={{
                         opacity: 0,
@@ -376,27 +443,43 @@ export default function Cart() {
                           </div>
 
                           <h2 className="text-2xl md:text-4xl font-black text-white leading-[1.05] mt-5">
-                            {aiSuggestions[0].title}
+                            {
+                              aiSuggestions[0]
+                                .title
+                            }
                           </h2>
 
                           <p className="text-orange-50 leading-7 mt-5 text-sm md:text-base max-w-xl">
-                            {aiSuggestions[0].subtitle}
+                            {
+                              aiSuggestions[0]
+                                .subtitle
+                            }
                           </p>
                         </div>
 
                         {/* RIGHT */}
 
-                        <div className="xl:min-w-[260px]">
+                        <div className="xl:min-w-[260px] w-full">
                           <div className="bg-white/10 backdrop-blur-xl rounded-[26px] p-4 border border-white/10">
                             <img
-                              src={aiSuggestions[0].item.imageUrl}
-                              alt={aiSuggestions[0].item.name}
-                              className="w-full h-[180px] object-cover rounded-2xl"
+                              src={
+                                aiSuggestions[0]
+                                  .item.imageUrl
+                              }
+                              alt={
+                                aiSuggestions[0]
+                                  .item.name
+                              }
+                              className="w-full h-[160px] sm:h-[180px] object-cover rounded-2xl"
                             />
 
                             <div className="mt-4 flex items-center justify-between">
                               <h3 className="text-white text-2xl font-black">
-                                ₹{aiSuggestions[0].item.price}
+                                ₹
+                                {
+                                  aiSuggestions[0]
+                                    .item.price
+                                }
                               </h3>
 
                               <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-black">
@@ -406,7 +489,10 @@ export default function Cart() {
 
                             <button
                               onClick={() => {
-                                addToCart(aiSuggestions[0].item._id);
+                                addToCart(
+                                  aiSuggestions[0]
+                                    .item._id,
+                                );
 
                                 showToast(
                                   `${aiSuggestions[0].item.name} added`,
@@ -442,7 +528,7 @@ export default function Cart() {
 
       {/* CHECKOUT */}
 
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-50">
+      <div className="fixed bottom-[88px] md:bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-40">
         <Link to="/checkout/address">
           <motion.button
             whileTap={{
@@ -450,27 +536,38 @@ export default function Cart() {
             }}
             className="w-full"
           >
-            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[26px] px-6 py-4 shadow-lg">
+            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[24px] px-5 py-4 shadow-[0_10px_40px_rgba(255,110,90,0.35)]">
               <div className="flex items-center justify-between">
+                {/* LEFT */}
+
                 <div>
-                  <p className="text-xs text-orange-100">Total payable</p>
+                  <p className="text-[11px] text-orange-100">
+                    Total payable
+                  </p>
 
                   <h2 className="text-white text-2xl font-black mt-1">
                     ₹{total}
                   </h2>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <p className="text-orange-100 text-xs">Secure checkout</p>
+                {/* RIGHT */}
 
-                    <h3 className="text-white font-black text-lg mt-1">
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-orange-100 text-[11px]">
+                      Secure checkout
+                    </p>
+
+                    <h3 className="text-white font-black text-base mt-1">
                       Continue
                     </h3>
                   </div>
 
                   <div className="h-11 w-11 rounded-2xl bg-white/20 flex items-center justify-center">
-                    <ArrowRight size={20} className="text-white" />
+                    <ArrowRight
+                      size={20}
+                      className="text-white"
+                    />
                   </div>
                 </div>
               </div>
