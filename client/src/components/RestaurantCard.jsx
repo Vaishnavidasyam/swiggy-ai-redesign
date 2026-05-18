@@ -1,107 +1,166 @@
+// src/components/RestaurantCard.jsx
+
+import { useState } from "react";
+
 import { motion } from "framer-motion";
 
 import { Link } from "react-router-dom";
 
 import { Clock3, Star, Heart } from "lucide-react";
 
+import { isFavorite, toggleFavorite } from "../utils/favorites";
+
+import useThemeStore from "../store/themeStore";
+
 export default function RestaurantCard({ restaurant }) {
+  const { darkMode } = useThemeStore();
+
+  /* FAVORITE */
+
+  const [favorite, setFavorite] = useState(isFavorite(restaurant._id));
+
+  /* HANDLE FAVORITE */
+
+  function handleFavorite(e) {
+    e.preventDefault();
+
+    const updated = toggleFavorite(restaurant._id);
+
+    setFavorite(updated.includes(restaurant._id));
+  }
+
   return (
     <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
       whileHover={{
-        y: -4,
+        y: -3,
       }}
       whileTap={{
-        scale: 0.98,
+        scale: 0.99,
       }}
-      className="mb-6"
+      transition={{
+        duration: 0.25,
+      }}
+      className="mb-5"
     >
       <Link to={`/restaurant/${restaurant._id}`}>
-        <div className="bg-white rounded-[32px] overflow-hidden shadow-lg border border-gray-100">
-          {/* IMAGE SECTION */}
+        <div
+          className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
+            darkMode
+              ? "bg-[#151d2d] border-[#232c3f]"
+              : "bg-white border-gray-100"
+          } shadow-sm`}
+        >
+          {/* IMAGE */}
 
-          <div className="relative overflow-hidden">
+          <div className="relative">
             <img
               src={restaurant.imageUrl}
               alt={restaurant.name}
-              className="w-full h-56 object-cover transition duration-500 hover:scale-105"
+              className="w-full h-52 object-cover"
             />
 
             {/* OVERLAY */}
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
-            {/* TRENDING */}
+            {/* DELIVERY */}
 
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-bold shadow-md">
-              🔥 Trending
+            <div className="absolute bottom-4 left-4 bg-black/75 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2">
+              <Clock3 size={13} />
+
+              <span>{restaurant.deliveryTime || "30 mins"}</span>
             </div>
 
             {/* FAVORITE */}
 
-            <button className="absolute top-4 right-4 bg-white/90 backdrop-blur-lg h-11 w-11 rounded-full flex items-center justify-center shadow-md">
-              <Heart size={18} className="text-red-500" />
+            <button
+              onClick={handleFavorite}
+              className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm"
+            >
+              <Heart
+                size={18}
+                className={`transition-all duration-300 ${
+                  favorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                }`}
+              />
             </button>
-
-            {/* DELIVERY */}
-
-            <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-2 rounded-2xl text-xs flex items-center gap-2 backdrop-blur-lg">
-              <Clock3 size={14} />
-
-              <span>{restaurant.deliveryTime || "30 mins"}</span>
-            </div>
           </div>
 
           {/* CONTENT */}
 
-          <div className="p-5">
+          <div className="p-4">
             {/* TOP */}
 
-            <div className="flex justify-between items-start gap-3">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-xl font-black text-gray-900">
+                <h2
+                  className={`text-[20px] font-black ${
+                    darkMode ? "text-white" : "text-[#111827]"
+                  }`}
+                >
                   {restaurant.name}
                 </h2>
 
-                <p className="text-gray-500 text-sm mt-1">
+                <p
+                  className={`text-sm mt-1 ${
+                    darkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
                   {restaurant.cuisine}
                 </p>
               </div>
 
               {/* RATING */}
 
-              <div className="bg-green-600 text-white px-3 py-2 rounded-2xl text-sm flex items-center gap-1 shadow-md">
-                <Star size={14} fill="white" />
+              <div className="bg-green-600 text-white px-3 py-2 rounded-xl text-sm flex items-center gap-1">
+                <Star size={13} fill="white" />
 
-                <span className="font-bold">{restaurant.rating}</span>
+                <span className="font-bold">{restaurant.rating || 4.5}</span>
               </div>
             </div>
 
             {/* TAGS */}
 
-            <div className="flex flex-wrap gap-2 mt-5">
-              <span className="bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs font-bold">
+            <div className="flex gap-2 flex-wrap mt-4">
+              <span className="bg-orange-100 text-orange-600 px-3 py-1.5 rounded-full text-[11px] font-semibold">
                 AI Recommended
               </span>
 
-              <span className="bg-green-100 text-green-600 px-4 py-2 rounded-full text-xs font-bold">
+              <span className="bg-green-100 text-green-600 px-3 py-1.5 rounded-full text-[11px] font-semibold">
                 Free Delivery
-              </span>
-
-              <span className="bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-xs font-bold">
-                Fast Serving
               </span>
             </div>
 
             {/* BOTTOM */}
 
-            <div className="flex justify-between items-center mt-6">
+            <div className="flex items-center justify-between mt-5">
               <div>
-                <p className="text-sm text-gray-400">Starting from</p>
+                <p
+                  className={`text-xs ${
+                    darkMode ? "text-gray-500" : "text-gray-400"
+                  }`}
+                >
+                  Starting from
+                </p>
 
-                <h3 className="text-lg font-black">₹149</h3>
+                <h3
+                  className={`text-[22px] font-black mt-1 ${
+                    darkMode ? "text-white" : "text-black"
+                  }`}
+                >
+                  ₹{restaurant.priceForTwo || 149}
+                </h3>
               </div>
 
-              <button className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white px-5 py-3 rounded-2xl font-bold shadow-lg">
+              <button className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-3 rounded-xl font-bold shadow-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
                 View Menu
               </button>
             </div>

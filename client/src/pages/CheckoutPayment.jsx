@@ -1,6 +1,4 @@
-// ==========================================
-// FILE: src/pages/CheckoutPayment.jsx
-// ==========================================
+// src/pages/CheckoutPayment.jsx
 
 import { useEffect, useState } from "react";
 
@@ -10,9 +8,12 @@ import {
   Banknote,
   ArrowRight,
   Sparkles,
-  BadgeCheck,
-  X,
+  ShieldCheck,
   Clock3,
+  CheckCircle2,
+  X,
+  WalletCards,
+  Zap,
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,7 +29,14 @@ export default function CheckoutPayment() {
 
   const { darkMode } = useThemeStore();
 
-  const { cartItems, subtotal, taxes, deliveryFee, grandTotal } = useCart();
+  const {
+    cartItems = [],
+    subtotal = 0,
+    taxes = 0,
+    deliveryFee = 0,
+    grandTotal = 0,
+    clearCart,
+  } = useCart();
 
   /* STATES */
 
@@ -46,11 +54,7 @@ export default function CheckoutPayment() {
 
   const [showUpiModal, setShowUpiModal] = useState(false);
 
-  const [showUpiRedirect, setShowUpiRedirect] = useState(false);
-
   const [selectedUpi, setSelectedUpi] = useState("Google Pay");
-
-  const [redirectingApp, setRedirectingApp] = useState("");
 
   /* CARD */
 
@@ -94,7 +98,7 @@ export default function CheckoutPayment() {
     }, 700);
   }, []);
 
-  /* SAVE */
+  /* SAVE METHOD */
 
   useEffect(() => {
     localStorage.setItem("lastPaymentMethod", paymentMethod);
@@ -108,8 +112,20 @@ export default function CheckoutPayment() {
 
   if (!cartItems || cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-xl font-black">
-        Cart Empty
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
+        }`}
+      >
+        <div className="text-center">
+          <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+            <WalletCards size={40} />
+          </div>
+
+          <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
+
+          <p className="mt-3 text-gray-500">Add delicious food to continue</p>
+        </div>
       </div>
     );
   }
@@ -118,13 +134,17 @@ export default function CheckoutPayment() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode ? "bg-[#0b1220]" : "bg-[#f5f7fb]"
+        }`}
+      >
         <div className="h-16 w-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  /* PAYMENT */
+  /* PAYMENT FLOW */
 
   function handlePayment() {
     if (paymentMethod === "CARD") {
@@ -147,6 +167,68 @@ export default function CheckoutPayment() {
   function processSuccess() {
     setProcessing(true);
 
+    /* CREATE ORDER */
+
+    const latestOrder = {
+      id: "#" + Math.random().toString(36).substring(2, 7).toUpperCase(),
+
+      restaurant: cartItems[0]?.restaurant || "Swiggy AI",
+
+      total: finalTotal,
+
+      payment:
+        paymentMethod === "UPI"
+          ? selectedUpi
+          : paymentMethod === "CARD"
+            ? "Card Payment"
+            : "Cash On Delivery",
+
+      eta: "28-35 mins",
+
+      rider: "Rahul Kumar",
+
+      address: "Ameerpet, Hyderabad",
+
+      createdAt: new Date().toISOString(),
+
+      items: cartItems.map((item) => ({
+        _id: item._id,
+
+        name: item.name,
+
+        qty: item.quantity || 1,
+
+        quantity: item.quantity || 1,
+
+        price: item.price,
+
+        imageUrl: item.imageUrl,
+
+        restaurant: item.restaurant,
+      })),
+    };
+
+    /* SAVE */
+
+    localStorage.setItem("latestOrder", JSON.stringify(latestOrder));
+
+    /* OPTIONAL ORDER HISTORY */
+
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    localStorage.setItem(
+      "orders",
+      JSON.stringify([latestOrder, ...existingOrders]),
+    );
+
+    /* CLEAR CART */
+
+    if (clearCart) {
+      clearCart();
+    }
+
+    /* REDIRECT */
+
     setTimeout(() => {
       navigate("/orders");
     }, 2200);
@@ -155,17 +237,6 @@ export default function CheckoutPayment() {
   /* CARD */
 
   function handleCardPay() {
-    if (
-      !cardData.name ||
-      !cardData.number ||
-      !cardData.expiry ||
-      !cardData.cvv
-    ) {
-      alert("Please fill all fields");
-
-      return;
-    }
-
     setShowCardModal(false);
 
     processSuccess();
@@ -173,248 +244,347 @@ export default function CheckoutPayment() {
 
   /* UPI */
 
-  function handleUpiContinue() {
+  function handleUpiPay() {
     setShowUpiModal(false);
 
-    setRedirectingApp(selectedUpi);
-
-    setShowUpiRedirect(true);
-
-    setTimeout(() => {
-      setShowUpiRedirect(false);
-
-      processSuccess();
-    }, 2500);
+    processSuccess();
   }
 
   return (
     <div
-      className={`min-h-screen pb-52 transition-all duration-300 ${
-        darkMode ? "bg-[#0a101f] text-white" : "bg-[#f4f7fb] text-black"
+      className={`min-h-screen pb-[180px] transition-all duration-300 ${
+        darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
       }`}
     >
-      {/* PROCESSING */}
+      {/* OVERLAY */}
 
       {processing && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" />
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-center justify-center">
+          <div className="bg-white rounded-[30px] p-8 text-center shadow-2xl">
+            <div className="h-16 w-16 mx-auto border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+
+            <h2 className="text-2xl font-black mt-6">Processing Payment</h2>
+
+            <p className="text-gray-500 mt-2">AI is confirming your order...</p>
+          </div>
+        </div>
       )}
 
       {/* CONTAINER */}
 
-      <div className="max-w-md mx-auto px-4">
+      <div className="max-w-[1450px] mx-auto px-4 md:px-6 xl:px-10">
         {/* HEADER */}
 
-        <div className="pt-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-[38px] font-black leading-[1]">Checkout</h1>
-
-              <p
-                className={`text-sm mt-3 ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Secure payment & instant order confirmation
-              </p>
-            </div>
-
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
-              <CreditCard size={24} />
-            </div>
-          </div>
-        </div>
-
-        {/* AI CARD */}
-
-        <div className="mt-6 relative overflow-hidden bg-gradient-to-br from-[#ff6b57] via-[#ff7f50] to-[#ff4d8d] rounded-[34px] p-6 text-white shadow-[0_15px_50px_rgba(255,120,90,0.25)]">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-2">
-              <Sparkles size={18} />
-
-              <span className="font-bold text-sm">AI Payment Assist</span>
-            </div>
-
-            <h2 className="text-3xl font-black mt-4 leading-tight">
-              Faster.
-              <br />
-              Safer.
-              <br />
-              Smarter.
-            </h2>
-
-            <p className="text-sm mt-4 text-orange-100 leading-7">
-              AI recommends UPI for instant payment confirmation and quicker
-              delivery processing.
-            </p>
-          </div>
-        </div>
-
-        {/* ETA */}
-
         <div
-          className={`mt-5 rounded-[32px] p-5 shadow-[0_10px_35px_rgba(0,0,0,0.04)] ${
-            darkMode ? "bg-[#151b29]" : "bg-white"
-          }`}
-        >
-          <div className="flex gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center">
-              <Clock3 size={24} />
-            </div>
-
-            <div>
-              <h2 className="font-black text-lg">Delivering in 28-35 mins</h2>
-
-              <p
-                className={`text-sm mt-1 ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                AI optimized delivery route selected
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* PAYMENT METHODS */}
-
-        <div className="mt-8">
-          <h2 className="text-2xl font-black mb-5">Payment Methods</h2>
-
-          <div className="space-y-4">
-            <PaymentMethod
-              icon={<Smartphone />}
-              title="UPI Payment"
-              subtitle="Recommended"
-              active={paymentMethod === "UPI"}
-              onClick={() => setPaymentMethod("UPI")}
-              darkMode={darkMode}
-            />
-
-            <PaymentMethod
-              icon={<CreditCard />}
-              title="Credit / Debit Card"
-              subtitle="Visa, Mastercard"
-              active={paymentMethod === "CARD"}
-              onClick={() => setPaymentMethod("CARD")}
-              darkMode={darkMode}
-            />
-
-            <PaymentMethod
-              icon={<Banknote />}
-              title="Cash On Delivery"
-              subtitle="Pay after delivery"
-              active={paymentMethod === "COD"}
-              onClick={() => setPaymentMethod("COD")}
-              darkMode={darkMode}
-            />
-          </div>
-        </div>
-
-        {/* TIP */}
-
-        <div
-          className={`mt-8 rounded-[34px] p-5 ${
-            darkMode ? "bg-[#151b29]" : "bg-white"
+          className={`sticky top-0 z-30 pt-6 pb-5 backdrop-blur-xl ${
+            darkMode ? "bg-[#0b1220]/90" : "bg-[#f5f7fb]/90"
           }`}
         >
           <div className="flex items-center justify-between">
-            <h2 className="font-black text-2xl">Delivery Tip</h2>
+            <div>
+              <p className="text-orange-500 font-bold text-sm">
+                AI SECURE CHECKOUT
+              </p>
 
-            <div className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">
-              Optional
-            </div>
-          </div>
+              <h1 className="text-4xl md:text-5xl font-black mt-2">Payment</h1>
 
-          <div className="flex gap-3 mt-5 overflow-x-auto no-scrollbar">
-            {[0, 20, 40, 60, 100].map((tip) => (
-              <button
-                key={tip}
-                onClick={() => setSelectedTip(tip)}
-                className={`min-w-[90px] rounded-[22px] py-4 px-4 font-black transition-all duration-300 active:scale-[0.98] ${
-                  selectedTip === tip
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
-                    : darkMode
-                      ? "bg-[#20283b]"
-                      : "bg-[#f8fafc]"
+              <p
+                className={`mt-3 text-sm ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                {tip === 0 ? "No Tip" : `₹${tip}`}
-              </button>
-            ))}
+                Secure encrypted transaction
+              </p>
+            </div>
+
+            <div className="h-16 w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
+              <WalletCards size={28} />
+            </div>
           </div>
         </div>
 
-        {/* BILL */}
+        {/* GRID */}
 
-        <div
-          className={`mt-8 rounded-[36px] p-6 shadow-[0_15px_40px_rgba(0,0,0,0.04)] ${
-            darkMode ? "bg-[#151b29]" : "bg-white"
-          }`}
-        >
-          <h2 className="font-black text-2xl">Bill Summary</h2>
+        <div className="grid xl:grid-cols-[1fr_420px] gap-8 mt-6">
+          {/* LEFT */}
 
-          <div className="flex items-center gap-2 mt-3">
-            <div className="bg-green-100 text-green-600 px-2 py-1 rounded-full text-[10px] font-bold">
-              Secure
+          <div className="space-y-6">
+            {/* HERO */}
+
+            <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-7 md:p-10 shadow-xl text-white">
+              <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-black">
+                  <Zap size={14} />
+                  AI Payment Assist
+                </div>
+
+                <h2 className="text-4xl md:text-6xl font-black leading-[1] mt-6">
+                  Faster.
+                  <br />
+                  Smarter.
+                  <br />
+                  Secure.
+                </h2>
+
+                <p className="mt-5 max-w-xl text-orange-100 leading-7">
+                  AI recommends the fastest and safest payment method based on
+                  your checkout experience.
+                </p>
+
+                <div className="flex flex-wrap gap-4 mt-8">
+                  <StatCard label="Success Rate" value="98%" />
+
+                  <StatCard label="Avg Speed" value="2 sec" />
+
+                  <StatCard label="Fraud Protection" value="100%" />
+                </div>
+              </div>
             </div>
 
-            <div className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-[10px] font-bold">
-              AI Verified
+            {/* ETA */}
+
+            <div
+              className={`rounded-[30px] p-6 border ${
+                darkMode
+                  ? "bg-[#151d2d] border-[#232c3f]"
+                  : "bg-white border-gray-100"
+              }`}
+            >
+              <div className="flex items-center gap-5">
+                <div className="h-16 w-16 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center">
+                  <Clock3 size={28} />
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-black">
+                    Delivery in 28-35 mins
+                  </h2>
+
+                  <p
+                    className={`mt-2 text-sm ${
+                      darkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    AI optimized delivery route selected
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="mt-6">
-            <BillRow label="Items Total" value={`₹${subtotal}`} />
+            {/* METHODS */}
 
-            <BillRow
-              label="Delivery Fee"
-              value={deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
-              green={deliveryFee === 0}
-            />
-
-            <BillRow label="Taxes & Charges" value={`₹${taxes}`} />
-
-            {selectedTip > 0 && (
-              <BillRow label="Delivery Tip" value={`₹${selectedTip}`} />
-            )}
-          </div>
-
-          <div className="border-t border-black/5 my-5" />
-
-          <div className="flex justify-between items-end">
             <div>
-              <p className="text-xs text-gray-500">Final Amount</p>
+              <h2 className="text-3xl font-black">Payment Methods</h2>
 
-              <h2 className="font-black text-3xl mt-1">To Pay</h2>
+              <div className="space-y-4 mt-5">
+                <PaymentMethod
+                  icon={<Smartphone />}
+                  title="UPI Payment"
+                  subtitle="Recommended for fastest checkout"
+                  active={paymentMethod === "UPI"}
+                  onClick={() => setPaymentMethod("UPI")}
+                  darkMode={darkMode}
+                />
+
+                <PaymentMethod
+                  icon={<CreditCard />}
+                  title="Credit / Debit Card"
+                  subtitle="Visa, Mastercard, Rupay"
+                  active={paymentMethod === "CARD"}
+                  onClick={() => setPaymentMethod("CARD")}
+                  darkMode={darkMode}
+                />
+
+                <PaymentMethod
+                  icon={<Banknote />}
+                  title="Cash On Delivery"
+                  subtitle="Pay after delivery"
+                  active={paymentMethod === "COD"}
+                  onClick={() => setPaymentMethod("COD")}
+                  darkMode={darkMode}
+                />
+              </div>
             </div>
 
-            <h2 className="font-black text-[42px] tracking-tight text-[#ff6b57]">
-              ₹{finalTotal}
-            </h2>
+            {/* TIP */}
+
+            <div
+              className={`rounded-[30px] p-6 border ${
+                darkMode
+                  ? "bg-[#151d2d] border-[#232c3f]"
+                  : "bg-white border-gray-100"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black">Add Delivery Tip</h2>
+
+                <div className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">
+                  Optional
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-5">
+                {[0, 20, 40, 60, 100].map((tip) => (
+                  <button
+                    key={tip}
+                    onClick={() => setSelectedTip(tip)}
+                    className={`min-w-[90px] py-4 rounded-[20px] font-black transition-all duration-300 ${
+                      selectedTip === tip
+                        ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                        : darkMode
+                          ? "bg-[#20283b]"
+                          : "bg-[#f4f6fb]"
+                    }`}
+                  >
+                    {tip === 0 ? "No Tip" : `₹${tip}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+
+          <div className="xl:sticky xl:top-32 h-fit">
+            <div
+              className={`rounded-[36px] overflow-hidden border shadow-sm ${
+                darkMode
+                  ? "bg-[#151d2d] border-[#232c3f]"
+                  : "bg-white border-gray-100"
+              }`}
+            >
+              {/* TOP */}
+
+              <div className="p-6 border-b border-black/5">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center">
+                    <ShieldCheck size={22} />
+                  </div>
+
+                  <div>
+                    <h2 className="font-black text-2xl">Secure Checkout</h2>
+
+                    <p
+                      className={`text-sm mt-1 ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      AI verified & encrypted
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ITEMS */}
+
+              <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto">
+                {cartItems.map((item) => (
+                  <div
+                    key={item._id}
+                    className={`flex items-center gap-4 rounded-[24px] p-3 ${
+                      darkMode ? "bg-[#20283b]" : "bg-[#f8fafc]"
+                    }`}
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="h-16 w-16 rounded-2xl object-cover"
+                    />
+
+                    <div className="flex-1">
+                      <h3 className="font-black text-sm">{item.name}</h3>
+
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        Qty {item.quantity}
+                      </p>
+                    </div>
+
+                    <h2 className="font-black">
+                      ₹{item.price * item.quantity}
+                    </h2>
+                  </div>
+                ))}
+              </div>
+
+              {/* BILL */}
+
+              <div className="border-t border-black/5 p-6">
+                <BillRow label="Items Total" value={`₹${subtotal}`} />
+
+                <BillRow
+                  label="Delivery Fee"
+                  value={deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                  green={deliveryFee === 0}
+                />
+
+                <BillRow label="Taxes" value={`₹${taxes}`} />
+
+                {selectedTip > 0 && (
+                  <BillRow label="Delivery Tip" value={`₹${selectedTip}`} />
+                )}
+
+                <div className="border-t border-black/5 my-5" />
+
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs text-gray-500">Final Amount</p>
+
+                    <h2 className="text-3xl font-black mt-1">To Pay</h2>
+                  </div>
+
+                  <h2 className="text-[42px] font-black tracking-tight text-[#ff6b57]">
+                    ₹{finalTotal}
+                  </h2>
+                </div>
+
+                {/* FEATURES */}
+
+                <div className="space-y-4 mt-8">
+                  <FeatureRow
+                    icon={<ShieldCheck size={18} />}
+                    title="256-bit encrypted payments"
+                  />
+
+                  <FeatureRow
+                    icon={<Sparkles size={18} />}
+                    title="AI fraud detection enabled"
+                  />
+
+                  <FeatureRow
+                    icon={<CheckCircle2 size={18} />}
+                    title="Instant order confirmation"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* PAY BAR */}
 
-      <div className="fixed bottom-[92px] left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50">
         <button
           disabled={processing}
           onClick={handlePayment}
-          className="w-full rounded-[32px] px-5 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-[0_20px_55px_rgba(255,120,90,0.30)] backdrop-blur-xl active:scale-[0.98] transition-all"
+          className="w-full rounded-[30px] px-6 py-5 bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-[0_15px_45px_rgba(255,120,100,0.35)]"
         >
           <div className="flex items-center justify-between">
-            <div>
+            <div className="text-left">
               <p className="text-xs text-orange-100">Instant confirmation</p>
 
               <h2 className="text-3xl font-black mt-1">₹{finalTotal}</h2>
             </div>
 
-            <div className="flex items-center gap-2 font-black text-lg">
+            <div className="flex items-center gap-3 font-black text-lg">
               {processing ? (
-                <>Processing...</>
+                "Processing..."
               ) : (
                 <>
                   Pay Now
@@ -431,38 +601,16 @@ export default function CheckoutPayment() {
       <AnimatePresence>
         {showCardModal && (
           <ModalWrapper>
-            <motion.div
-              initial={{
-                y: 100,
-              }}
-              animate={{
-                y: 0,
-              }}
-              exit={{
-                y: 100,
-              }}
-              className={`rounded-t-[40px] p-6 backdrop-blur-xl ${
-                darkMode ? "bg-[#151b29]" : "bg-white"
+            <div
+              className={`rounded-t-[40px] p-6 ${
+                darkMode ? "bg-[#151d2d]" : "bg-white"
               }`}
             >
-              <div className="w-14 h-1.5 bg-gray-300 rounded-full mx-auto mb-6" />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-3xl font-black">Card Details</h2>
-
-                  <p className="text-sm text-gray-500 mt-2">
-                    Mock payment gateway
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowCardModal(false)}
-                  className="h-11 w-11 rounded-2xl bg-[#f4f4f4] flex items-center justify-center"
-                >
-                  <X size={20} />
-                </button>
-              </div>
+              <ModalHeader
+                title="Card Details"
+                subtitle="Secure mock payment"
+                close={() => setShowCardModal(false)}
+              />
 
               <div className="space-y-4 mt-7">
                 <Input
@@ -517,12 +665,12 @@ export default function CheckoutPayment() {
 
                 <button
                   onClick={handleCardPay}
-                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-xl active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-md"
                 >
                   Pay ₹{finalTotal}
                 </button>
               </div>
-            </motion.div>
+            </div>
           </ModalWrapper>
         )}
       </AnimatePresence>
@@ -532,145 +680,75 @@ export default function CheckoutPayment() {
       <AnimatePresence>
         {showUpiModal && (
           <ModalWrapper>
-            <motion.div
-              initial={{
-                y: 100,
-                opacity: 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: 100,
-                opacity: 0,
-              }}
+            <div
               className={`rounded-t-[40px] p-6 ${
-                darkMode ? "bg-[#151b29]" : "bg-white"
+                darkMode ? "bg-[#151d2d]" : "bg-white"
               }`}
             >
-              <div className="w-14 h-1.5 bg-gray-300 rounded-full mx-auto mb-6" />
-
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="font-black text-3xl">Select UPI App</h2>
-
-                  <p className="text-sm text-gray-500 mt-2">
-                    Choose app to continue payment
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowUpiModal(false)}
-                  className="h-11 w-11 rounded-2xl bg-[#f4f4f4] flex items-center justify-center"
-                >
-                  <X size={20} />
-                </button>
-              </div>
+              <ModalHeader
+                title="Choose UPI"
+                subtitle="Fastest payment option"
+                close={() => setShowUpiModal(false)}
+              />
 
               <div className="space-y-4 mt-7">
                 {upiApps.map((app) => (
-                  <motion.button
-                    whileHover={{
-                      scale: 1.02,
-                    }}
-                    whileTap={{
-                      scale: 0.98,
-                    }}
+                  <button
                     key={app.name}
                     onClick={() => setSelectedUpi(app.name)}
-                    className={`w-full rounded-[30px] p-4 flex items-center gap-4 transition-all duration-300 ${
+                    className={`w-full rounded-[24px] p-4 border flex items-center justify-between transition-all ${
                       selectedUpi === app.name
-                        ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                        ? "border-orange-500 bg-orange-50"
                         : darkMode
-                          ? "bg-[#20283b]"
-                          : "bg-[#f8fafc]"
+                          ? "border-[#232c3f]"
+                          : "border-gray-100"
                     }`}
                   >
-                    <img
-                      src={app.image}
-                      alt={app.name}
-                      className="h-14 w-14 object-contain bg-white rounded-[18px] p-2 shadow-sm"
-                    />
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={app.image}
+                        alt={app.name}
+                        className="h-12 w-12 object-contain"
+                      />
 
-                    <div className="flex-1 text-left">
-                      <h2 className="font-black text-lg">{app.name}</h2>
+                      <div className="text-left">
+                        <h3 className="font-black">{app.name}</h3>
 
-                      <p className="text-xs mt-1 opacity-80">
-                        Fast & Secure UPI Payment
-                      </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Instant payment
+                        </p>
+                      </div>
                     </div>
 
-                    {selectedUpi === app.name && <BadgeCheck size={24} />}
-                  </motion.button>
+                    {selectedUpi === app.name && (
+                      <CheckCircle2 className="text-green-500" />
+                    )}
+                  </button>
                 ))}
-              </div>
 
-              <button
-                onClick={handleUpiContinue}
-                className="w-full mt-7 bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-xl active:scale-[0.98]"
-              >
-                Continue to {selectedUpi}
-              </button>
-            </motion.div>
-          </ModalWrapper>
-        )}
-      </AnimatePresence>
-
-      {/* REDIRECTING */}
-
-      <AnimatePresence>
-        {showUpiRedirect && (
-          <ModalWrapper>
-            <motion.div
-              initial={{
-                y: 100,
-                opacity: 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: 100,
-                opacity: 0,
-              }}
-              className={`rounded-t-[40px] p-7 ${
-                darkMode ? "bg-[#151b29]" : "bg-white"
-              }`}
-            >
-              <div className="w-14 h-1.5 bg-gray-300 rounded-full mx-auto mb-8" />
-
-              <div className="flex justify-center">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.08, 1],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.2,
-                  }}
-                  className="h-24 w-24 rounded-[30px] bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-2xl"
+                <button
+                  onClick={handleUpiPay}
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-md"
                 >
-                  <Smartphone size={38} className="text-white" />
-                </motion.div>
+                  Continue with {selectedUpi}
+                </button>
               </div>
-
-              <div className="text-center mt-7">
-                <h2 className="text-3xl font-black">Redirecting</h2>
-
-                <p className="mt-4 text-sm leading-7 text-gray-500">
-                  Opening{" "}
-                  <span className="font-black text-[#ff6b57]">
-                    {redirectingApp}
-                  </span>{" "}
-                  for secure UPI payment
-                </p>
-              </div>
-            </motion.div>
+            </div>
           </ModalWrapper>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/* STAT CARD */
+
+function StatCard({ label, value }) {
+  return (
+    <div className="bg-white/15 backdrop-blur-lg px-5 py-4 rounded-2xl min-w-[120px]">
+      <p className="text-orange-100 text-xs">{label}</p>
+
+      <h3 className="font-black text-2xl mt-1">{value}</h3>
     </div>
   );
 }
@@ -681,16 +759,16 @@ function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full rounded-[32px] p-5 border transition-all duration-300 active:scale-[0.98] ${
+      className={`w-full rounded-[28px] p-5 border transition-all duration-300 ${
         active
-          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-xl border-transparent"
+          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white border-transparent shadow-lg"
           : darkMode
-            ? "bg-[#151b29] border-white/5"
-            : "bg-white border-black/5"
+            ? "bg-[#151d2d] border-[#232c3f]"
+            : "bg-white border-gray-100"
       }`}
     >
       <div className="flex items-center justify-between">
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
           <div
             className={`h-14 w-14 rounded-2xl flex items-center justify-center ${
               active ? "bg-white/20" : "bg-[#fff3ef] text-[#ff6b57]"
@@ -699,7 +777,7 @@ function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
             {icon}
           </div>
 
-          <div>
+          <div className="text-left">
             <h2 className="font-black text-lg">{title}</h2>
 
             <p
@@ -736,6 +814,20 @@ function BillRow({ label, value, green }) {
   );
 }
 
+/* FEATURE */
+
+function FeatureRow({ icon, title }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="h-10 w-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+        {icon}
+      </div>
+
+      <p className="font-semibold text-sm">{title}</p>
+    </div>
+  );
+}
+
 /* INPUT */
 
 function Input({ placeholder, value, onChange, darkMode }) {
@@ -749,6 +841,31 @@ function Input({ placeholder, value, onChange, darkMode }) {
         darkMode ? "bg-[#20283b] text-white" : "bg-[#f8fafc]"
       }`}
     />
+  );
+}
+
+/* MODAL HEADER */
+
+function ModalHeader({ title, subtitle, close }) {
+  return (
+    <>
+      <div className="w-14 h-1.5 bg-gray-300 rounded-full mx-auto mb-6" />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-black">{title}</h2>
+
+          <p className="text-sm text-gray-500 mt-2">{subtitle}</p>
+        </div>
+
+        <button
+          onClick={close}
+          className="h-11 w-11 rounded-2xl bg-[#f4f4f4] flex items-center justify-center"
+        >
+          <X size={20} />
+        </button>
+      </div>
+    </>
   );
 }
 

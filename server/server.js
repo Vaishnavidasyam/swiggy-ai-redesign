@@ -6,7 +6,7 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-
+import searchRoutes from "./routes/searchRoutes.js";
 import connectDB from "./config/db.js";
 
 import restaurantRoutes from "./routes/restaurantRoutes.js";
@@ -25,10 +25,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "https://swiggy-ai-redesign.vercel.app",
-      "http://localhost:5173",
-    ],
+    origin: ["https://swiggy-ai-redesign.vercel.app", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -42,10 +39,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: [
-      "https://swiggy-ai-redesign.vercel.app",
-      "http://localhost:5173",
-    ],
+    origin: ["https://swiggy-ai-redesign.vercel.app", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -92,14 +86,35 @@ app.use("/api/user", userRoutes);
 app.use("/api/ai", aiRoutes);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/search", searchRoutes);
 
 /* LIVE ORDER STATUS DEMO */
 
+/* LIVE ORDER STATUS DEMO */
+
+const statuses = [
+  "Order Placed ✅",
+
+  "Preparing Food 🍳",
+
+  "Rider Assigned 🛵",
+
+  "Picked Up 📦",
+
+  "Near You 📍",
+
+  "Delivered 🎉",
+];
+
+let currentStatus = 0;
+
 setInterval(() => {
   io.emit("order-status-update", {
-    status: "Preparing your food 🍳",
+    status: statuses[currentStatus],
   });
-}, 15000);
+
+  currentStatus = (currentStatus + 1) % statuses.length;
+}, 5000);
 
 /* PORT */
 

@@ -1,6 +1,4 @@
-// ==========================================
-// FILE: src/pages/Cart.jsx
-// ==========================================
+// src/pages/Cart.jsx
 
 import { useMemo, useState, useEffect } from "react";
 
@@ -11,8 +9,8 @@ import {
   Plus,
   Trash2,
   ShoppingBag,
-  ChevronDown,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,43 +21,27 @@ import { useCart } from "../context/CartContext";
 
 import useThemeStore from "../store/themeStore";
 
-import AISavingsCard from "../components/AISavingsCard";
-
-import SmartCouponSection from "../components/SmartCouponSection";
-
 import CompactBillSummary from "../components/CompactBillSummary";
 
-export default function Cart() {
-  /* CART */
+import { getAISuggestions } from "../utils/checkoutAI";
 
+export default function Cart() {
   const {
     cartItems = [],
     loading,
     addToCart,
-    removeFromCart,
     increaseQty,
     decreaseQty,
+    removeFromCart,
   } = useCart();
-
-  /* THEME */
 
   const { darkMode } = useThemeStore();
 
-  /* STATES */
-
   const [toast, setToast] = useState("");
-
-  const [notes, setNotes] = useState({});
-
-  const [expandedNote, setExpandedNote] = useState(null);
 
   const [recommendations, setRecommendations] = useState([]);
 
-  const [appliedCoupon, setAppliedCoupon] = useState("");
-
-  const [savings, setSavings] = useState(0);
-
-  /* LOAD RECOMMENDATIONS */
+  /* LOAD */
 
   useEffect(() => {
     async function loadRecommendations() {
@@ -71,9 +53,7 @@ export default function Cart() {
 
           const menuRes = await api.get(`/restaurants/${restaurantId}/menu`);
 
-          const suggested = menuRes.data.filter((item) => item.price < 200);
-
-          setRecommendations(suggested.slice(0, 4));
+          setRecommendations(menuRes.data);
         }
       } catch (err) {
         console.log(err);
@@ -86,17 +66,20 @@ export default function Cart() {
   /* TOTALS */
 
   const subtotal = useMemo(() => {
-    return cartItems.reduce(
-      (acc, item) => acc + (item.price || 0) * item.quantity,
-      0,
-    );
+    return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }, [cartItems]);
 
   const taxes = Math.round(subtotal * 0.05);
 
   const deliveryFee = subtotal >= 399 ? 0 : 40;
 
+  const savings = 60;
+
   const total = subtotal + taxes + deliveryFee - savings;
+
+  /* AI */
+
+  const aiSuggestions = getAISuggestions(cartItems, recommendations);
 
   /* TOAST */
 
@@ -117,22 +100,22 @@ export default function Cart() {
           darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
         }`}
       >
-        <div className="h-32 w-32 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-xl">
-          <ShoppingBag size={54} className="text-white" />
+        <div className="h-28 w-28 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-sm">
+          <ShoppingBag size={44} className="text-white" />
         </div>
 
         <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
 
         <p
-          className={`mt-4 text-sm leading-7 max-w-[280px] ${
+          className={`mt-4 text-sm leading-7 max-w-[300px] ${
             darkMode ? "text-gray-400" : "text-gray-500"
           }`}
         >
           Add delicious food from nearby restaurants and continue checkout.
         </p>
 
-        <Link to="/">
-          <button className="mt-8 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-[24px] font-black shadow-xl">
+        <Link to="/home">
+          <button className="mt-8 bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold shadow-sm">
             Explore Food
           </button>
         </Link>
@@ -142,7 +125,7 @@ export default function Cart() {
 
   return (
     <div
-      className={`min-h-screen pb-[240px] transition-all duration-300 ${
+      className={`min-h-screen pb-[220px] transition-all duration-300 ${
         darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
       }`}
     >
@@ -163,7 +146,7 @@ export default function Cart() {
               opacity: 0,
               y: -20,
             }}
-            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-black text-white px-5 py-3 rounded-2xl text-sm font-bold shadow-xl"
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-black text-white px-5 py-3 rounded-2xl text-sm font-bold shadow-md"
           >
             {toast}
           </motion.div>
@@ -174,22 +157,28 @@ export default function Cart() {
 
       {loading && (
         <div className="flex justify-center pt-10">
-          <div className="h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          <div className="h-10 w-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
-      <div className="max-w-md mx-auto px-4">
+      {/* CONTAINER */}
+
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-6 xl:px-10">
         {/* HEADER */}
 
-        <div className="sticky top-0 z-40 backdrop-blur-xl pt-5 pb-4">
+        <div
+          className={`sticky top-0 z-40 pt-6 pb-5 ${
+            darkMode ? "bg-[#0b1220]/95" : "bg-[#f5f7fb]/95"
+          } backdrop-blur-sm`}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-[34px] font-black leading-[1.05]">
+              <h1 className="text-4xl md:text-5xl font-black leading-none">
                 Your Cart
               </h1>
 
               <p
-                className={`text-sm mt-2 ${
+                className={`text-sm mt-3 ${
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
@@ -197,288 +186,263 @@ export default function Cart() {
               </p>
             </div>
 
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
-              <ShoppingBag size={24} />
+            <div className="h-16 w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-sm">
+              <ShoppingBag size={28} />
             </div>
           </div>
         </div>
 
-        {/* AI SAVINGS */}
+        {/* MAIN */}
 
-        <AISavingsCard
-          subtotal={subtotal}
-          addToCart={addToCart}
-          recommendations={recommendations}
-        />
+        <div className="grid xl:grid-cols-[1.4fr_0.5fr] gap-8 mt-6">
+          {/* LEFT */}
 
-        {/* CART ITEMS */}
+          <div>
+            {/* ITEMS */}
 
-        <div className="mt-6 space-y-4">
-          {cartItems.map((item, index) => (
-            <motion.div
-              key={item._id}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: index * 0.05,
-              }}
-              className={`rounded-[28px] p-4 shadow-[0_10px_35px_rgba(0,0,0,0.06)] transition-all duration-300 ${
-                darkMode ? "bg-[#151d2d]" : "bg-white"
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                {/* IMAGE */}
+            <div className="space-y-5">
+              {cartItems.map((item, index) => (
+                <motion.div
+                  key={item._id}
+                  initial={{
+                    opacity: 0,
+                    y: 20,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    delay: index * 0.04,
+                  }}
+                  className={`rounded-[32px] border overflow-hidden shadow-sm ${
+                    darkMode
+                      ? "bg-[#151d2d] border-[#232c3f]"
+                      : "bg-white border-gray-100"
+                  }`}
+                >
+                  <div className="flex flex-col lg:flex-row">
+                    {/* IMAGE */}
 
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="h-[96px] w-[96px] min-w-[96px] rounded-[22px] object-cover bg-gray-200"
-                />
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-full lg:w-[320px] h-[260px] object-cover"
+                    />
 
-                {/* CONTENT */}
+                    {/* CONTENT */}
 
-                <div className="flex-1 min-w-0">
-                  {/* TOP */}
+                    <div className="flex-1 p-7">
+                      <div className="flex justify-between gap-5">
+                        <div>
+                          <div className="inline-flex bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black mb-4">
+                            AI Recommended
+                          </div>
 
-                  <div className="flex justify-between gap-3">
-                    <div className="pr-2">
-                      <h2 className="font-black text-[17px] leading-6 line-clamp-2">
-                        {item.name}
-                      </h2>
+                          <h2 className="text-3xl font-black leading-tight">
+                            {item.name}
+                          </h2>
+
+                          <p
+                            className={`text-sm mt-3 leading-7 ${
+                              darkMode ? "text-gray-400" : "text-gray-500"
+                            }`}
+                          >
+                            Freshly prepared using premium ingredients &
+                            optimized for fast delivery.
+                          </p>
+
+                          <h3 className="mt-6 text-4xl font-black text-[#ff6b57]">
+                            ₹{item.price}
+                          </h3>
+                        </div>
+
+                        {/* DELETE */}
+
+                        <button
+                          onClick={() => {
+                            removeFromCart(item._id);
+
+                            showToast(`${item.name} removed`);
+                          }}
+                          className="h-12 w-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+
+                      {/* FOOTER */}
+
+                      <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+                        {/* QUANTITY */}
+
+                        <div className="flex items-center gap-4 bg-[#fff4ef] px-4 py-3 rounded-2xl">
+                          <button
+                            onClick={() => {
+                              decreaseQty(item._id);
+
+                              showToast("Quantity updated");
+                            }}
+                            className="h-10 w-10 rounded-xl bg-white text-[#ff6b57] flex items-center justify-center shadow-sm"
+                          >
+                            <Minus size={16} />
+                          </button>
+
+                          <span className="font-black text-lg text-[#111827] min-w-[18px] text-center">
+                            {item.quantity}
+                          </span>
+
+                          <button
+                            onClick={() => {
+                              increaseQty(item._id);
+
+                              showToast("Quantity updated");
+                            }}
+                            className="h-10 w-10 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-sm"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+
+                        {/* TOTAL */}
+
+                        <h2 className="text-4xl font-black">
+                          ₹{item.price * item.quantity}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* SMART INSIGHTS */}
+
+            {aiSuggestions.length > 0 && (
+              <div
+                className={`mt-8 rounded-[32px] overflow-hidden border shadow-sm ${
+                  darkMode
+                    ? "bg-[#151d2d] border-[#232c3f]"
+                    : "bg-white border-gray-100"
+                }`}
+              >
+                {/* HEADER */}
+
+                <div className="flex items-center justify-between p-6 border-b border-white/5">
+                  <div className="flex items-center gap-4">
+                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-md">
+                      <Sparkles size={22} className="text-white" />
+                    </div>
+
+                    <div>
+                      <h2 className="text-2xl font-black">Smart Insights</h2>
 
                       <p
-                        className={`text-[11px] mt-1 ${
+                        className={`text-sm mt-1 ${
                           darkMode ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        Popular item
+                        AI-powered meal intelligence
                       </p>
-
-                      <h3 className="mt-2 font-black text-[20px] text-[#ff6b57]">
-                        ₹{item.price}
-                      </h3>
                     </div>
-
-                    {/* DELETE */}
-
-                    <button
-                      onClick={() => {
-                        removeFromCart(item._id);
-
-                        showToast(`${item.name} removed`);
-                      }}
-                      className="h-10 w-10 min-w-[40px] rounded-xl bg-red-50 text-red-500 flex items-center justify-center"
-                    >
-                      <Trash2 size={16} />
-                    </button>
                   </div>
 
-                  {/* QUANTITY */}
-
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    {/* STEPPER */}
-
-                    <div className="flex items-center gap-4 bg-[#fff4ef] px-3 py-2 rounded-2xl">
-                      {/* MINUS */}
-
-                      <button
-                        onClick={() => {
-                          decreaseQty(item._id);
-
-                          showToast("Quantity updated");
-                        }}
-                        className="h-9 w-9 rounded-xl bg-white text-[#ff6b57] flex items-center justify-center shadow-sm"
-                      >
-                        <Minus size={15} />
-                      </button>
-
-                      {/* COUNT */}
-
-                      <span className="font-black text-base min-w-[18px] text-center text-[#111827]">
-                        {item.quantity}
-                      </span>
-
-                      {/* PLUS */}
-
-                      <button
-                        onClick={() => {
-                          increaseQty(item._id);
-
-                          showToast("Quantity updated");
-                        }}
-                        className="h-9 w-9 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg"
-                      >
-                        <Plus size={15} />
-                      </button>
-                    </div>
-
-                    {/* TOTAL */}
-
-                    <h2 className="font-black text-[22px] whitespace-nowrap">
-                      ₹{item.price * item.quantity}
-                    </h2>
-                  </div>
-
-                  {/* NOTES */}
-
-                  <div className="mt-3">
-                    <button
-                      onClick={() =>
-                        setExpandedNote(
-                          expandedNote === item._id ? null : item._id,
-                        )
-                      }
-                      className="text-[#ff6b57] text-[12px] font-semibold flex items-center gap-1 mt-2"
-                    >
-                      Add cooking instructions
-                      <ChevronDown size={15} />
-                    </button>
-
-                    <AnimatePresence>
-                      {expandedNote === item._id && (
-                        <motion.div
-                          initial={{
-                            height: 0,
-                            opacity: 0,
-                          }}
-                          animate={{
-                            height: "auto",
-                            opacity: 1,
-                          }}
-                          exit={{
-                            height: 0,
-                            opacity: 0,
-                          }}
-                          className="overflow-hidden"
-                        >
-                          <textarea
-                            value={notes[item._id] || ""}
-                            onChange={(e) =>
-                              setNotes({
-                                ...notes,
-
-                                [item._id]: e.target.value,
-                              })
-                            }
-                            placeholder="Less spicy, no onion..."
-                            className={`w-full mt-3 rounded-2xl p-4 text-sm outline-none resize-none ${
-                              darkMode
-                                ? "bg-[#1f293d] text-white placeholder:text-gray-500"
-                                : "bg-[#f8fafc]"
-                            }`}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                  <div className="hidden md:flex bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs font-black">
+                    LIVE AI
                   </div>
                 </div>
+
+                {/* FEATURED */}
+
+                {aiSuggestions[0] && (
+                  <div className="p-5">
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-5 md:p-6"
+                    >
+                      <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+                        {/* LEFT */}
+
+                        <div className="max-w-2xl">
+                          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-white text-xs font-black">
+                            ✨ AI FEATURED PICK
+                          </div>
+
+                          <h2 className="text-2xl md:text-4xl font-black text-white leading-[1.05] mt-5">
+                            {aiSuggestions[0].title}
+                          </h2>
+
+                          <p className="text-orange-50 leading-7 mt-5 text-sm md:text-base max-w-xl">
+                            {aiSuggestions[0].subtitle}
+                          </p>
+                        </div>
+
+                        {/* RIGHT */}
+
+                        <div className="xl:min-w-[260px]">
+                          <div className="bg-white/10 backdrop-blur-xl rounded-[26px] p-4 border border-white/10">
+                            <img
+                              src={aiSuggestions[0].item.imageUrl}
+                              alt={aiSuggestions[0].item.name}
+                              className="w-full h-[180px] object-cover rounded-2xl"
+                            />
+
+                            <div className="mt-4 flex items-center justify-between">
+                              <h3 className="text-white text-2xl font-black">
+                                ₹{aiSuggestions[0].item.price}
+                              </h3>
+
+                              <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-black">
+                                AI
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => {
+                                addToCart(aiSuggestions[0].item._id);
+
+                                showToast(
+                                  `${aiSuggestions[0].item.name} added`,
+                                );
+                              }}
+                              className="w-full mt-4 bg-white text-[#ff6b57] py-3 rounded-2xl font-black shadow-lg"
+                            >
+                              Add Recommendation
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* COUPONS */}
-
-        <SmartCouponSection
-          subtotal={subtotal}
-          appliedCoupon={appliedCoupon}
-          setAppliedCoupon={setAppliedCoupon}
-          savings={savings}
-          setSavings={setSavings}
-        />
-
-        {/* COMPLETE MEAL */}
-
-        <div className="mt-7">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="font-black text-2xl">Complete your meal</h2>
-
-              <p
-                className={`text-xs mt-1 ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Frequently added together
-              </p>
-            </div>
+            )}
           </div>
 
-          <div className="space-y-4">
-            {recommendations.map((item) => (
-              <motion.div
-                key={item._id}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                className={`rounded-[24px] p-4 flex items-center justify-between gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.05)] ${
-                  darkMode ? "bg-[#151d2d]" : "bg-white"
-                }`}
-              >
-                {/* LEFT */}
+          {/* RIGHT */}
 
-                <div className="flex items-center gap-4">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="h-16 w-16 rounded-2xl object-cover"
-                  />
-
-                  <div>
-                    <h2 className="font-black">{item.name}</h2>
-
-                    <p
-                      className={`text-xs mt-1 ${
-                        darkMode ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      Popular add-on
-                    </p>
-
-                    <h3 className="font-black mt-1 text-[#ff6b57]">
-                      ₹{item.price}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* ADD */}
-
-                <button
-                  onClick={() => {
-                    addToCart(item._id);
-
-                    showToast(`${item.name} added`);
-                  }}
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-3 rounded-2xl font-black shadow-lg"
-                >
-                  Add
-                </button>
-              </motion.div>
-            ))}
+          <div className="xl:sticky xl:top-32 h-fit">
+            <CompactBillSummary
+              subtotal={subtotal}
+              taxes={taxes}
+              deliveryFee={deliveryFee}
+              savings={savings}
+              total={total}
+            />
           </div>
         </div>
       </div>
 
-      {/* BILL */}
+      {/* CHECKOUT */}
 
-      <CompactBillSummary
-        subtotal={subtotal}
-        taxes={taxes}
-        deliveryFee={deliveryFee}
-        savings={savings}
-        total={total}
-        appliedCoupon={appliedCoupon}
-      />
-
-      {/* CHECKOUT BAR */}
-
-      <div className="fixed bottom-[92px] left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-50">
         <Link to="/checkout/address">
           <motion.button
             whileTap={{
@@ -486,21 +450,17 @@ export default function Cart() {
             }}
             className="w-full"
           >
-            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[30px] px-5 py-4 shadow-[0_18px_50px_rgba(255,120,90,0.28)]">
+            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[26px] px-6 py-4 shadow-lg">
               <div className="flex items-center justify-between">
-                {/* LEFT */}
-
                 <div>
                   <p className="text-xs text-orange-100">Total payable</p>
 
-                  <h2 className="text-white text-[30px] font-black mt-1">
+                  <h2 className="text-white text-2xl font-black mt-1">
                     ₹{total}
                   </h2>
                 </div>
 
-                {/* RIGHT */}
-
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-orange-100 text-xs">Secure checkout</p>
 
@@ -509,7 +469,7 @@ export default function Cart() {
                     </h3>
                   </div>
 
-                  <div className="h-11 w-11 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/10 flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-2xl bg-white/20 flex items-center justify-center">
                     <ArrowRight size={20} className="text-white" />
                   </div>
                 </div>
