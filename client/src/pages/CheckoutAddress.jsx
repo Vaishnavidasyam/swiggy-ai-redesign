@@ -22,8 +22,7 @@ import useThemeStore from "../store/themeStore";
 export default function CheckoutAddress() {
   const { darkMode } = useThemeStore();
 
-  const [selectedAddress, setSelectedAddress] =
-    useState("home");
+  const [selectedAddress, setSelectedAddress] = useState("home");
 
   const [addresses, setAddresses] = useState([
     {
@@ -72,9 +71,7 @@ export default function CheckoutAddress() {
   return (
     <div
       className={`min-h-screen overflow-x-hidden pb-[190px] md:pb-[170px] transition-all duration-300 ${
-        darkMode
-          ? "bg-[#0b1220] text-white"
-          : "bg-[#f5f7fb] text-black"
+        darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
       }`}
     >
       {/* CONTAINER */}
@@ -93,13 +90,10 @@ export default function CheckoutAddress() {
 
               <p
                 className={`mt-3 text-sm md:text-base ${
-                  darkMode
-                    ? "text-gray-400"
-                    : "text-gray-500"
+                  darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                Choose where your food should
-                arrive
+                Choose where your food should arrive
               </p>
             </div>
 
@@ -176,13 +170,10 @@ export default function CheckoutAddress() {
 
                       <p
                         className={`mt-1 text-sm ${
-                          darkMode
-                            ? "text-gray-400"
-                            : "text-gray-500"
+                          darkMode ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        Live location or manual
-                        entry
+                        Live location or manual entry
                       </p>
                     </div>
                   </div>
@@ -203,9 +194,7 @@ export default function CheckoutAddress() {
                     scale: 0.98,
                   }}
                   className={`w-full rounded-[22px] md:rounded-[28px] p-4 md:p-5 flex items-center justify-between transition-all ${
-                    darkMode
-                      ? "bg-[#1b2435]"
-                      : "bg-[#f5f7fb]"
+                    darkMode ? "bg-[#1b2435]" : "bg-[#f5f7fb]"
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -241,9 +230,7 @@ export default function CheckoutAddress() {
 
                       <p
                         className={`text-sm mt-1 ${
-                          darkMode
-                            ? "text-gray-400"
-                            : "text-gray-500"
+                          darkMode ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
                         GPS powered smart address
@@ -251,10 +238,7 @@ export default function CheckoutAddress() {
                     </div>
                   </div>
 
-                  <ArrowRight
-                    size={18}
-                    className="text-gray-400"
-                  />
+                  <ArrowRight size={18} className="text-gray-400" />
                 </motion.button>
 
                 {/* DIVIDER */}
@@ -262,9 +246,7 @@ export default function CheckoutAddress() {
                 <div className="flex items-center gap-4">
                   <div className="flex-1 h-[1px] bg-gray-200" />
 
-                  <span className="text-xs text-gray-400">
-                    OR
-                  </span>
+                  <span className="text-xs text-gray-400">OR</span>
 
                   <div className="flex-1 h-[1px] bg-gray-200" />
                 </div>
@@ -276,9 +258,7 @@ export default function CheckoutAddress() {
                     scale: 0.98,
                   }}
                   className={`w-full rounded-[22px] md:rounded-[28px] p-4 md:p-5 flex items-center justify-between transition-all ${
-                    darkMode
-                      ? "bg-[#1b2435]"
-                      : "bg-[#f5f7fb]"
+                    darkMode ? "bg-[#1b2435]" : "bg-[#f5f7fb]"
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -306,21 +286,15 @@ export default function CheckoutAddress() {
 
                       <p
                         className={`text-sm mt-1 ${
-                          darkMode
-                            ? "text-gray-400"
-                            : "text-gray-500"
+                          darkMode ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        Apartment, hostel,
-                        office...
+                        Apartment, hostel, office...
                       </p>
                     </div>
                   </div>
 
-                  <ArrowRight
-                    size={18}
-                    className="text-gray-400"
-                  />
+                  <ArrowRight size={18} className="text-gray-400" />
                 </motion.button>
               </div>
             </div>
@@ -333,9 +307,7 @@ export default function CheckoutAddress() {
                   Saved Addresses
                 </h2>
 
-                <button className="text-[#ff6b57] font-black">
-                  Manage
-                </button>
+                <button className="text-[#ff6b57] font-black">Manage</button>
               </div>
 
               {/* LIST */}
@@ -344,8 +316,7 @@ export default function CheckoutAddress() {
                 {addresses.map((item) => {
                   const Icon = item.icon;
 
-                  const active =
-                    selectedAddress === item.id;
+                  const active = selectedAddress === item.id;
 
                   return (
                     <motion.button
@@ -353,9 +324,7 @@ export default function CheckoutAddress() {
                       whileTap={{
                         scale: 0.99,
                       }}
-                      onClick={() =>
-                        setSelectedAddress(item.id)
-                      }
+                      onClick={() => setSelectedAddress(item.id)}
                       className={`w-full text-left rounded-[24px] md:rounded-[32px] border p-4 md:p-6 transition-all ${
                         active
                           ? "border-[#ff7a45] shadow-[0_10px_40px_rgba(255,120,100,0.12)]"
@@ -395,9 +364,7 @@ export default function CheckoutAddress() {
 
                             <p
                               className={`mt-2 text-base md:text-lg ${
-                                darkMode
-                                  ? "text-gray-400"
-                                  : "text-gray-500"
+                                darkMode ? "text-gray-400" : "text-gray-500"
                               }`}
                             >
                               {item.address}
@@ -469,16 +436,11 @@ export default function CheckoutAddress() {
 
                 <p
                   className={`mt-4 leading-8 text-base ${
-                    darkMode
-                      ? "text-gray-400"
-                      : "text-gray-500"
+                    darkMode ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  Your selected address enables
-                  faster rider allocation,
-                  optimized ETA predictions,
-                  and real-time delivery
-                  tracking.
+                  Your selected address enables faster rider allocation,
+                  optimized ETA predictions, and real-time delivery tracking.
                 </p>
 
                 {/* STATS */}
@@ -486,34 +448,22 @@ export default function CheckoutAddress() {
                 <div className="grid grid-cols-2 gap-3 mt-6">
                   <div
                     className={`rounded-2xl p-4 ${
-                      darkMode
-                        ? "bg-[#1b2435]"
-                        : "bg-[#fff7f3]"
+                      darkMode ? "bg-[#1b2435]" : "bg-[#fff7f3]"
                     }`}
                   >
-                    <p className="text-xs text-gray-400">
-                      Avg Delivery
-                    </p>
+                    <p className="text-xs text-gray-400">Avg Delivery</p>
 
-                    <h3 className="text-2xl font-black mt-2">
-                      18 mins
-                    </h3>
+                    <h3 className="text-2xl font-black mt-2">18 mins</h3>
                   </div>
 
                   <div
                     className={`rounded-2xl p-4 ${
-                      darkMode
-                        ? "bg-[#1b2435]"
-                        : "bg-[#fff7f3]"
+                      darkMode ? "bg-[#1b2435]" : "bg-[#fff7f3]"
                     }`}
                   >
-                    <p className="text-xs text-gray-400">
-                      AI Accuracy
-                    </p>
+                    <p className="text-xs text-gray-400">AI Accuracy</p>
 
-                    <h3 className="text-2xl font-black mt-2">
-                      98%
-                    </h3>
+                    <h3 className="text-2xl font-black mt-2">98%</h3>
                   </div>
                 </div>
 
@@ -531,8 +481,7 @@ export default function CheckoutAddress() {
                       </h3>
 
                       <p className="text-sm text-gray-400 mt-1">
-                        AI predicts best nearby
-                        rider
+                        AI predicts best nearby rider
                       </p>
                     </div>
                   </div>
@@ -548,8 +497,7 @@ export default function CheckoutAddress() {
                       </h3>
 
                       <p className="text-sm text-gray-400 mt-1">
-                        Detects flats, towers &
-                        landmarks
+                        Detects flats, towers & landmarks
                       </p>
                     </div>
                   </div>
@@ -564,52 +512,41 @@ export default function CheckoutAddress() {
 
       <div
         className="
-          fixed
-          bottom-[92px]
-          md:bottom-6
-          left-0
-          right-0
-          z-40
-          px-3
-          md:px-6
-        "
+    fixed
+    bottom-[92px]
+    md:bottom-6
+    left-0
+    right-0
+    z-40
+    px-3
+    md:px-6
+  "
       >
         <div className="max-w-[620px] mx-auto">
           <Link to="/checkout/payment">
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              className="w-full"
-            >
+            <motion.button whileTap={{ scale: 0.98 }} className="w-full">
               <div
                 className="
-                  bg-gradient-to-r
-                  from-orange-500
-                  to-pink-500
-                  rounded-[22px]
-                  md:rounded-[28px]
-                  px-4
-                  md:px-5
-                  py-3
-                  md:py-4
-                  shadow-[0_10px_35px_rgba(255,110,90,0.3)]
-                "
+            bg-gradient-to-r
+            from-orange-500
+            to-pink-500
+            rounded-[22px]
+            md:rounded-[28px]
+            px-4
+            md:px-5
+            py-3
+            md:py-4
+            shadow-[0_10px_35px_rgba(255,110,90,0.3)]
+          "
               >
                 <div className="flex items-center justify-between">
                   {/* LEFT */}
 
                   <div>
-                    <p className="text-[10px] text-orange-100">
-                      Delivering to
-                    </p>
+                    <p className="text-[10px] text-orange-100">Delivering to</p>
 
                     <h2 className="text-white text-lg md:text-2xl font-black mt-1">
-                      {
-                        addresses.find(
-                          (a) =>
-                            a.id ===
-                            selectedAddress,
-                        )?.title
-                      }
+                      {addresses.find((a) => a.id === selectedAddress)?.title}
                     </h2>
                   </div>
 
@@ -628,21 +565,18 @@ export default function CheckoutAddress() {
 
                     <div
                       className="
-                        h-10
-                        w-10
-                        md:h-12
-                        md:w-12
-                        rounded-2xl
-                        bg-white/20
-                        flex
-                        items-center
-                        justify-center
-                      "
+                  h-10
+                  w-10
+                  md:h-12
+                  md:w-12
+                  rounded-2xl
+                  bg-white/20
+                  flex
+                  items-center
+                  justify-center
+                "
                     >
-                      <ArrowRight
-                        size={18}
-                        className="text-white"
-                      />
+                      <ArrowRight size={18} className="text-white" />
                     </div>
                   </div>
                 </div>
