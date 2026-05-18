@@ -21,8 +21,6 @@ import { useCart } from "../context/CartContext";
 
 import useThemeStore from "../store/themeStore";
 
-import CompactBillSummary from "../components/CompactBillSummary";
-
 import { getAISuggestions } from "../utils/checkoutAI";
 
 export default function Cart() {
@@ -141,7 +139,7 @@ export default function Cart() {
 
   return (
     <div
-      className={`min-h-screen pb-[320px] md:pb-[220px] transition-all duration-300 ${
+      className={`min-h-screen pb-[420px] md:pb-[240px] transition-all duration-300 ${
         darkMode
           ? "bg-[#0b1220] text-white"
           : "bg-[#f5f7fb] text-black"
@@ -189,7 +187,7 @@ export default function Cart() {
             darkMode
               ? "bg-[#0b1220]/95"
               : "bg-[#f5f7fb]/95"
-          } backdrop-blur-sm`}
+          } backdrop-blur-xl`}
         >
           <div className="flex items-center justify-between">
             <div>
@@ -236,9 +234,9 @@ export default function Cart() {
                     y: 0,
                   }}
                   transition={{
-                    delay: index * 0.04,
+                    delay: index * 0.05,
                   }}
-                  className={`rounded-[32px] border overflow-hidden shadow-sm ${
+                  className={`rounded-[32px] overflow-hidden border shadow-sm ${
                     darkMode
                       ? "bg-[#151d2d] border-[#232c3f]"
                       : "bg-white border-gray-100"
@@ -253,7 +251,7 @@ export default function Cart() {
                       className="
                         w-full
                         lg:w-[320px]
-                        h-[220px]
+                        h-[240px]
                         sm:h-[260px]
                         object-cover
                       "
@@ -268,12 +266,12 @@ export default function Cart() {
                             AI Recommended
                           </div>
 
-                          <h2 className="text-[34px] sm:text-3xl font-black leading-tight">
+                          <h2 className="text-[28px] md:text-[38px] font-black leading-tight">
                             {item.name}
                           </h2>
 
                           <p
-                            className={`text-sm mt-3 leading-7 ${
+                            className={`text-sm leading-7 mt-4 ${
                               darkMode
                                 ? "text-gray-400"
                                 : "text-gray-500"
@@ -285,7 +283,7 @@ export default function Cart() {
                             delivery.
                           </p>
 
-                          <h3 className="mt-5 text-3xl sm:text-4xl font-black text-[#ff6b57]">
+                          <h3 className="mt-5 text-4xl font-black text-[#ff6b57]">
                             ₹{item.price}
                           </h3>
                         </div>
@@ -302,7 +300,7 @@ export default function Cart() {
                               `${item.name} removed`,
                             );
                           }}
-                          className="h-12 w-12 min-w-[48px] rounded-2xl bg-red-50 text-red-500 flex items-center justify-center"
+                          className="h-12 w-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -311,7 +309,7 @@ export default function Cart() {
                       {/* FOOTER */}
 
                       <div className="mt-8 flex items-center justify-between gap-4 flex-wrap">
-                        {/* QUANTITY */}
+                        {/* QTY */}
 
                         <div className="flex items-center gap-3 bg-[#fff4ef] px-3 py-3 rounded-2xl">
                           <button
@@ -362,7 +360,7 @@ export default function Cart() {
                             Total
                           </p>
 
-                          <h2 className="text-3xl md:text-4xl font-black">
+                          <h2 className="text-4xl font-black">
                             ₹
                             {item.price *
                               item.quantity}
@@ -375,7 +373,7 @@ export default function Cart() {
               ))}
             </div>
 
-            {/* SMART INSIGHTS */}
+            {/* AI SECTION */}
 
             {aiSuggestions.length > 0 && (
               <div
@@ -385,129 +383,109 @@ export default function Cart() {
                     : "bg-white border-gray-100"
                 }`}
               >
-                {/* HEADER */}
-
-                <div className="flex items-center justify-between p-5 border-b border-white/5">
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center shadow-md">
-                      <Sparkles
-                        size={22}
-                        className="text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <h2 className="text-xl md:text-2xl font-black">
-                        Smart Insights
-                      </h2>
-
-                      <p
-                        className={`text-sm mt-1 ${
-                          darkMode
-                            ? "text-gray-400"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        AI-powered meal
-                        intelligence
-                      </p>
-                    </div>
+                <div className="flex items-center gap-4 p-5 border-b border-white/5">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center">
+                    <Sparkles
+                      size={22}
+                      className="text-white"
+                    />
                   </div>
 
-                  <div className="hidden md:flex bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs font-black">
-                    LIVE AI
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-black">
+                      Smart Insights
+                    </h2>
+
+                    <p
+                      className={`text-sm mt-1 ${
+                        darkMode
+                          ? "text-gray-400"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      AI-powered meal
+                      intelligence
+                    </p>
                   </div>
                 </div>
 
-                {/* FEATURED */}
+                {/* FEATURE */}
 
-                {aiSuggestions[0] && (
-                  <div className="p-4 sm:p-5">
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        y: 20,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-5 md:p-6"
-                    >
-                      <div className="relative z-10 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
-                        {/* LEFT */}
+                <div className="p-4 sm:p-5">
+                  <div className="rounded-[28px] overflow-hidden bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-5 md:p-6">
+                    <div className="flex flex-col xl:flex-row gap-6 xl:items-center xl:justify-between">
+                      {/* LEFT */}
 
-                        <div className="max-w-2xl">
-                          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-white text-xs font-black">
-                            ✨ AI FEATURED PICK
-                          </div>
-
-                          <h2 className="text-2xl md:text-4xl font-black text-white leading-[1.05] mt-5">
-                            {
-                              aiSuggestions[0]
-                                .title
-                            }
-                          </h2>
-
-                          <p className="text-orange-50 leading-7 mt-5 text-sm md:text-base max-w-xl">
-                            {
-                              aiSuggestions[0]
-                                .subtitle
-                            }
-                          </p>
+                      <div className="max-w-xl">
+                        <div className="inline-flex bg-white/20 text-white px-4 py-2 rounded-full text-xs font-black">
+                          ✨ AI FEATURED PICK
                         </div>
 
-                        {/* RIGHT */}
+                        <h2 className="text-3xl md:text-5xl leading-[1.05] font-black text-white mt-5">
+                          {
+                            aiSuggestions[0]
+                              .title
+                          }
+                        </h2>
 
-                        <div className="xl:min-w-[260px] w-full">
-                          <div className="bg-white/10 backdrop-blur-xl rounded-[26px] p-4 border border-white/10">
-                            <img
-                              src={
+                        <p className="text-orange-50 mt-5 leading-7 text-sm md:text-base">
+                          {
+                            aiSuggestions[0]
+                              .subtitle
+                          }
+                        </p>
+                      </div>
+
+                      {/* RIGHT */}
+
+                      <div className="xl:w-[280px]">
+                        <div className="bg-white/10 backdrop-blur-xl rounded-[26px] p-4 border border-white/10">
+                          <img
+                            src={
+                              aiSuggestions[0]
+                                .item.imageUrl
+                            }
+                            alt={
+                              aiSuggestions[0]
+                                .item.name
+                            }
+                            className="w-full h-[170px] object-cover rounded-2xl"
+                          />
+
+                          <div className="mt-4 flex items-center justify-between">
+                            <h3 className="text-white text-2xl font-black">
+                              ₹
+                              {
                                 aiSuggestions[0]
-                                  .item.imageUrl
+                                  .item.price
                               }
-                              alt={
-                                aiSuggestions[0]
-                                  .item.name
-                              }
-                              className="w-full h-[160px] sm:h-[180px] object-cover rounded-2xl"
-                            />
+                            </h3>
 
-                            <div className="mt-4 flex items-center justify-between">
-                              <h3 className="text-white text-2xl font-black">
-                                ₹
-                                {
-                                  aiSuggestions[0]
-                                    .item.price
-                                }
-                              </h3>
-
-                              <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-black">
-                                AI
-                              </div>
+                            <div className="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-black">
+                              AI
                             </div>
-
-                            <button
-                              onClick={() => {
-                                addToCart(
-                                  aiSuggestions[0]
-                                    .item._id,
-                                );
-
-                                showToast(
-                                  `${aiSuggestions[0].item.name} added`,
-                                );
-                              }}
-                              className="w-full mt-4 bg-white text-[#ff6b57] py-3 rounded-2xl font-black shadow-lg"
-                            >
-                              Add Recommendation
-                            </button>
                           </div>
+
+                          <button
+                            onClick={() => {
+                              addToCart(
+                                aiSuggestions[0]
+                                  .item._id,
+                              );
+
+                              showToast(
+                                `${aiSuggestions[0].item.name} added`,
+                              );
+                            }}
+                            className="w-full mt-4 bg-white text-[#ff6b57] py-3 rounded-2xl font-black"
+                          >
+                            Add Recommendation
+                          </button>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
           </div>
@@ -528,7 +506,7 @@ export default function Cart() {
 
       {/* CHECKOUT */}
 
-      <div className="fixed bottom-[88px] md:bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-40">
+      <div className="fixed bottom-[118px] md:bottom-6 left-1/2 -translate-x-1/2 w-full max-w-xl px-4 z-40">
         <Link to="/checkout/address">
           <motion.button
             whileTap={{
@@ -536,16 +514,16 @@ export default function Cart() {
             }}
             className="w-full"
           >
-            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[24px] px-5 py-4 shadow-[0_10px_40px_rgba(255,110,90,0.35)]">
+            <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-[26px] px-5 py-4 shadow-[0_12px_40px_rgba(255,110,90,0.35)]">
               <div className="flex items-center justify-between">
                 {/* LEFT */}
 
                 <div>
-                  <p className="text-[11px] text-orange-100">
+                  <p className="text-[11px] text-orange-100 tracking-wide">
                     Total payable
                   </p>
 
-                  <h2 className="text-white text-2xl font-black mt-1">
+                  <h2 className="text-white text-[30px] font-black leading-none mt-1">
                     ₹{total}
                   </h2>
                 </div>
@@ -558,14 +536,14 @@ export default function Cart() {
                       Secure checkout
                     </p>
 
-                    <h3 className="text-white font-black text-base mt-1">
+                    <h3 className="text-white font-black text-lg mt-1">
                       Continue
                     </h3>
                   </div>
 
-                  <div className="h-11 w-11 rounded-2xl bg-white/20 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
                     <ArrowRight
-                      size={20}
+                      size={22}
                       className="text-white"
                     />
                   </div>
@@ -575,6 +553,111 @@ export default function Cart() {
           </motion.button>
         </Link>
       </div>
+    </div>
+  );
+}
+
+/* BILL SUMMARY */
+
+export function CompactBillSummary({
+  subtotal,
+  taxes,
+  deliveryFee,
+  savings,
+  total,
+}) {
+  return (
+    <div className="rounded-[32px] bg-white border border-gray-100 shadow-sm overflow-hidden">
+      <div className="p-6">
+        <h2 className="text-3xl font-black">
+          Bill Summary
+        </h2>
+
+        <p className="text-gray-500 text-sm mt-2">
+          Transparent pricing
+        </p>
+
+        <div className="space-y-5 mt-8">
+          <BillRow
+            label="Item Total"
+            value={`₹${subtotal}`}
+          />
+
+          <BillRow
+            label="Delivery Fee"
+            value={
+              deliveryFee === 0
+                ? "FREE 🎉"
+                : `₹${deliveryFee}`
+            }
+            green={deliveryFee === 0}
+          />
+
+          <BillRow
+            label="Taxes & Charges"
+            value={`₹${taxes}`}
+          />
+
+          <BillRow
+            label="Savings"
+            value={`-₹${savings}`}
+            green
+          />
+        </div>
+
+        <div className="h-px bg-gray-100 my-7" />
+
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">
+              To Pay
+            </p>
+
+            <h2 className="text-[52px] leading-none font-black mt-2">
+              ₹{total}
+            </h2>
+          </div>
+
+          <div className="text-right">
+            <h3 className="text-green-500 text-3xl font-black">
+              ₹{savings}
+            </h3>
+
+            <p className="text-green-500 text-sm font-bold mt-1">
+              You Saved
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 bg-[#f8fafc] rounded-2xl p-5 text-gray-600 font-semibold leading-7">
+          🔐 100% secure payments & encrypted
+          checkout
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BillRow({
+  label,
+  value,
+  green,
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <p className="text-gray-500 text-lg">
+        {label}
+      </p>
+
+      <h3
+        className={`font-black text-2xl ${
+          green
+            ? "text-green-500"
+            : "text-[#111827]"
+        }`}
+      >
+        {value}
+      </h3>
     </div>
   );
 }
