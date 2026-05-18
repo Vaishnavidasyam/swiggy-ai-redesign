@@ -407,35 +407,31 @@ AI helped discover:
 
 ## 🏠 Home Experience
 
-```text
-client/public/screenshots/home1.png
-client/public/screenshots/home2.png
-client/public/screenshots/home3.png
-```
+![Home Screen 1](client/public/screenshots/home1.png)
+
+![Home Screen 2](client/public/screenshots/home2.png)
+
+![Home Screen 3](client/public/screenshots/home3.png)
 
 ---
 
 ## 🛒 Smart Cart
 
-```text
-client/public/screenshots/checkout1.png
-```
+![Checkout Screen](client/public/screenshots/checkout1.png)
 
 ---
 
 ## 💳 AI Smart Checkout
 
-```text
-client/public/screenshots/payment.png
-```
+![Payment Screen](client/public/screenshots/payment.png)
 
 ---
 
 ## 📍 Live Tracking
 
-```text
-client/public/screenshots/order.png
-```
+![Order Tracking](client/public/screenshots/order.png)
+![Order Tracking](client/public/screenshots/delivered-page.png)
+
 
 ---
 
