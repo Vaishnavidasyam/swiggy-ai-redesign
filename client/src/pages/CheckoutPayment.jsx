@@ -1,18 +1,18 @@
-// src/pages/Orders.jsx
+// src/pages/CheckoutPayment.jsx
 
 import { useEffect, useState } from "react";
 
 import {
-  CheckCircle2,
-  CookingPot,
-  Package,
-  Bike,
-  Home,
-  Clock3,
+  Smartphone,
+  CreditCard,
+  Banknote,
+  ArrowRight,
   ShieldCheck,
-  Sparkles,
-  ChevronRight,
-  Store,
+  Clock3,
+  CheckCircle2,
+  X,
+  WalletCards,
+  Zap,
 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,705 +21,781 @@ import { useNavigate } from "react-router-dom";
 
 import useThemeStore from "../store/themeStore";
 
-export default function Orders() {
+import { useCart } from "../context/CartContext";
+
+export default function CheckoutPayment() {
   const navigate = useNavigate();
 
   const { darkMode } = useThemeStore();
 
-  const order = JSON.parse(localStorage.getItem("latestOrder")) || {};
+  const {
+    cartItems = [],
+    subtotal = 0,
+    taxes = 0,
+    deliveryFee = 0,
+    grandTotal = 0,
+    clearCart,
+  } = useCart();
 
-  const steps = [
+  const [loading, setLoading] = useState(true);
+
+  const [paymentMethod, setPaymentMethod] = useState(
+    localStorage.getItem("lastPaymentMethod") || "UPI",
+  );
+
+  const [selectedTip, setSelectedTip] = useState(20);
+
+  const [processing, setProcessing] = useState(false);
+
+  const [showCardModal, setShowCardModal] = useState(false);
+
+  const [showUpiModal, setShowUpiModal] = useState(false);
+
+  const [selectedUpi, setSelectedUpi] = useState("Google Pay");
+
+  const [cardData, setCardData] = useState({
+    name: "Rahul Sharma",
+    number: "4111 1111 1111 1111",
+    expiry: "12/28",
+    cvv: "123",
+  });
+
+  const upiApps = [
     {
-      title: "Order Confirmed",
-      subtitle: "Restaurant accepted your order",
-      icon: <CheckCircle2 size={16} />,
-      color: "from-green-500 to-emerald-500",
+      name: "Google Pay",
+      image: "https://cdn-icons-png.flaticon.com/512/6124/6124998.png",
     },
 
     {
-      title: "Preparing Food",
-      subtitle: "Chef is preparing your meal",
-      icon: <CookingPot size={16} />,
-      color: "from-orange-500 to-amber-500",
+      name: "PhonePe",
+      image: "https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png",
     },
 
     {
-      title: "Packing Order",
-      subtitle: "Food packed securely",
-      icon: <Package size={16} />,
-      color: "from-pink-500 to-rose-500",
-    },
-
-    {
-      title: "Picked Up",
-      subtitle: "Rider picked your order",
-      icon: <Bike size={16} />,
-      color: "from-sky-500 to-cyan-500",
-    },
-
-    {
-      title: "On The Way",
-      subtitle: "Heading to your location",
-      icon: <Bike size={16} />,
-      color: "from-violet-500 to-purple-500",
-    },
-
-    {
-      title: "Delivered",
-      subtitle: "Enjoy your delicious meal",
-      icon: <Home size={16} />,
-      color: "from-emerald-500 to-green-500",
+      name: "Paytm",
+      image: "https://download.logo.wine/logo/Paytm/Paytm-Logo.wine.png",
     },
   ];
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  const [riderPosition, setRiderPosition] = useState(12);
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveStep((prev) => {
-        if (prev < steps.length - 1) {
-          return prev + 1;
-        }
-
-        return prev;
-      });
-    }, 4000);
-
-    return () => clearInterval(interval);
+    setTimeout(() => {
+      setLoading(false);
+    }, 700);
   }, []);
 
   useEffect(() => {
-    if (activeStep < 3) return;
+    localStorage.setItem("lastPaymentMethod", paymentMethod);
+  }, [paymentMethod]);
 
-    const interval = setInterval(() => {
-      setRiderPosition((prev) => {
-        if (prev >= 82) return prev;
+  const finalTotal = grandTotal + selectedTip;
 
-        return prev + 5;
-      });
-    }, 1800);
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
+        }`}
+      >
+        <div className="text-center">
+          <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+            <WalletCards size={40} />
+          </div>
 
-    return () => clearInterval(interval);
-  }, [activeStep]);
+          <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
 
-  const showMap = activeStep >= 3 && activeStep < 5;
+          <p className="mt-3 text-gray-500">Add delicious food to continue</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode ? "bg-[#0b1220]" : "bg-[#f5f7fb]"
+        }`}
+      >
+        <div className="h-16 w-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  function handlePayment() {
+    if (paymentMethod === "CARD") {
+      setShowCardModal(true);
+      return;
+    }
+
+    if (paymentMethod === "UPI") {
+      setShowUpiModal(true);
+      return;
+    }
+
+    processSuccess();
+  }
+
+  function processSuccess() {
+    setProcessing(true);
+
+    const latestOrder = {
+      id: "#" + Math.random().toString(36).substring(2, 7).toUpperCase(),
+
+      restaurant: cartItems[0]?.restaurant || "Swiggy AI",
+
+      total: finalTotal,
+
+      payment:
+        paymentMethod === "UPI"
+          ? selectedUpi
+          : paymentMethod === "CARD"
+            ? "Card Payment"
+            : "Cash On Delivery",
+
+      eta: "28-35 mins",
+
+      rider: "Rahul Kumar",
+
+      address: "Ameerpet, Hyderabad",
+
+      createdAt: new Date().toISOString(),
+
+      items: cartItems.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        qty: item.quantity || 1,
+        quantity: item.quantity || 1,
+        price: item.price,
+        imageUrl: item.imageUrl,
+        restaurant: item.restaurant,
+      })),
+    };
+
+    localStorage.setItem("latestOrder", JSON.stringify(latestOrder));
+
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    localStorage.setItem(
+      "orders",
+      JSON.stringify([latestOrder, ...existingOrders]),
+    );
+
+    if (clearCart) {
+      clearCart();
+    }
+
+    setTimeout(() => {
+      navigate("/orders");
+    }, 2200);
+  }
+
+  function handleCardPay() {
+    setShowCardModal(false);
+    processSuccess();
+  }
+
+  function handleUpiPay() {
+    setShowUpiModal(false);
+    processSuccess();
+  }
 
   return (
     <div
-      className={`min-h-screen pb-[260px] md:pb-[180px] transition-all duration-500 ${
-        darkMode
-          ? "bg-gradient-to-br from-[#0b1220] via-[#111827] to-[#151d2d] text-white"
-          : "bg-gradient-to-br from-[#fff7f2] via-[#fdfdfd] to-[#f5f7fb]"
+      className={`min-h-screen pb-[360px] md:pb-[200px] transition-all duration-300 ${
+        darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
       }`}
     >
+      {/* PROCESSING */}
+
+      {processing && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[500] flex items-center justify-center">
+          <div className="bg-white rounded-[30px] p-8 text-center shadow-2xl">
+            <div className="h-16 w-16 mx-auto border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+
+            <h2 className="text-2xl font-black mt-6 text-black">
+              Processing Payment
+            </h2>
+
+            <p className="text-gray-500 mt-2">AI is confirming your order...</p>
+          </div>
+        </div>
+      )}
+
       {/* CONTAINER */}
 
-      <div className="max-w-[1320px] mx-auto px-4 md:px-6">
-        {/* HERO */}
+      <div className="max-w-[1450px] mx-auto px-4 md:px-6 xl:px-10">
+        {/* HEADER */}
 
-        <div className="pt-6">
-          <div className="grid lg:grid-cols-[1fr_260px] gap-4">
-            {/* LEFT */}
-
+        <div
+          className={`sticky top-0 z-30 pt-5 md:pt-6 pb-5 backdrop-blur-xl ${
+            darkMode ? "bg-[#0b1220]/90" : "bg-[#f5f7fb]/90"
+          }`}
+        >
+          <div className="flex items-center justify-between">
             <div>
-              <motion.div
-                key={activeStep}
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                }}
+              <p className="text-orange-500 font-bold text-xs md:text-sm">
+                AI SECURE CHECKOUT
+              </p>
+
+              <h1 className="text-4xl md:text-5xl font-black mt-2">Payment</h1>
+
+              <p
+                className={`mt-2 md:mt-3 text-sm ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}
               >
-                <div
-                  className={`inline-flex items-center gap-2 bg-gradient-to-r ${steps[activeStep].color} text-white px-4 py-2 rounded-full text-xs font-black shadow-lg`}
-                >
-                  ✨ LIVE DELIVERY STATUS
-                </div>
-
-                <h1 className="text-[40px] md:text-[52px] leading-none font-black tracking-tight mt-4">
-                  {steps[activeStep].title}
-                </h1>
-
-                <p
-                  className={`mt-3 text-sm max-w-md leading-7 ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  {steps[activeStep].subtitle}
-                </p>
-              </motion.div>
+                Secure encrypted transaction
+              </p>
             </div>
 
-            {/* PRICE */}
-
-            <div
-              className={`rounded-[28px] p-5 border backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] ${
-                darkMode
-                  ? "bg-white/[0.05] border-white/[0.06]"
-                  : "bg-white/80 border-black/[0.04]"
-              }`}
-            >
-              <p className="text-gray-500 text-sm">Total Paid</p>
-
-              <h2 className="text-[42px] font-black mt-3 bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
-                ₹{order.total || 754}
-              </h2>
-
-              <div className="mt-5 inline-flex items-center gap-2 bg-green-100 text-green-600 px-3 py-2 rounded-full text-xs font-black">
-                <ShieldCheck size={14} />
-                Payment Successful
-              </div>
+            <div className="h-14 w-14 md:h-16 md:w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
+              <WalletCards size={26} />
             </div>
           </div>
         </div>
 
         {/* GRID */}
 
-        <div className="grid xl:grid-cols-[1fr_310px] gap-5 mt-5">
+        <div className="grid xl:grid-cols-[1fr_420px] gap-6 md:gap-8 mt-5 md:mt-6">
           {/* LEFT */}
 
-          <div className="space-y-4">
-            {/* AI CARD */}
+          <div className="space-y-5 md:space-y-6">
+            {/* HERO */}
 
-            <div
-              className={`rounded-[32px] overflow-hidden bg-gradient-to-r ${steps[activeStep].color} p-5 text-white relative shadow-[0_20px_50px_rgba(0,0,0,0.12)]`}
-            >
-              <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-white/10 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-5 md:p-10 shadow-xl text-white">
+              <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-black">
-                  🚀 AI DELIVERY ENGINE
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-[10px] md:text-xs font-black">
+                  <Zap size={14} />
+                  AI Payment Assist
                 </div>
 
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStep}
-                    initial={{
-                      opacity: 0,
-                      y: 20,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -20,
-                    }}
-                    transition={{
-                      duration: 0.4,
-                    }}
-                  >
-                    <h2 className="text-3xl md:text-4xl font-black leading-tight mt-5">
-                      {steps[activeStep].title}
-                    </h2>
+                <h2 className="text-3xl md:text-6xl font-black leading-[1] mt-5 md:mt-6">
+                  Faster.
+                  <br />
+                  Smarter.
+                  <br />
+                  Secure.
+                </h2>
 
-                    <p className="mt-3 text-white/90 max-w-lg text-sm leading-7">
-                      {steps[activeStep].subtitle}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
+                <p className="mt-4 md:mt-5 max-w-xl text-orange-100 leading-7 text-sm md:text-base">
+                  AI recommends the fastest and safest payment method.
+                </p>
 
-                <div className="flex flex-wrap gap-3 mt-5">
-                  <MiniStat title="ETA" value="28 mins" />
-
-                  <MiniStat title="AI Match" value="98%" />
-
-                  <MiniStat title="Route" value="Fastest" />
+                <div className="flex flex-wrap gap-3 md:gap-4 mt-6 md:mt-8">
+                  <StatCard label="Success Rate" value="98%" />
+                  <StatCard label="Avg Speed" value="2 sec" />
+                  <StatCard label="Protection" value="100%" />
                 </div>
               </div>
             </div>
 
-            {/* MAP */}
+            {/* ETA */}
 
-            <AnimatePresence>
-              {showMap && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                  }}
-                >
-                  <GlassCard darkMode={darkMode}>
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h2 className="text-2xl font-black">Live Map</h2>
+            <div
+              className={`rounded-[24px] md:rounded-[30px] p-5 md:p-6 border ${
+                darkMode
+                  ? "bg-[#151d2d] border-[#232c3f]"
+                  : "bg-white border-gray-100"
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-14 w-14 md:h-16 md:w-16 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center">
+                  <Clock3 size={24} />
+                </div>
 
-                        <p className="text-sm text-gray-500 mt-1">
-                          Rider is on the way
-                        </p>
-                      </div>
-
-                      <div className="bg-green-100 text-green-600 px-3 py-2 rounded-full text-xs font-black">
-                        LIVE
-                      </div>
-                    </div>
-
-                    <div className="relative h-[240px] rounded-[28px] overflow-hidden bg-gradient-to-br from-[#eef5ff] via-[#f7fbff] to-[#edf3f8]">
-                      <div className="absolute left-14 right-14 top-1/2 h-2 rounded-full bg-gradient-to-r from-orange-300 to-pink-400" />
-
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20">
-                        <div className="h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 border-[4px] border-white shadow-xl flex items-center justify-center text-white">
-                          <Store size={18} />
-                        </div>
-                      </div>
-
-                      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20">
-                        <div className="h-14 w-14 rounded-full bg-green-500 border-[4px] border-white shadow-xl flex items-center justify-center text-white">
-                          <Home size={18} />
-                        </div>
-                      </div>
-
-                      <motion.div
-                        animate={{
-                          left: `${riderPosition}%`,
-                        }}
-                        transition={{
-                          duration: 1.8,
-                        }}
-                        className="absolute top-1/2 -translate-y-1/2 z-30"
-                      >
-                        <div className="relative">
-                          <div className="absolute inset-0 rounded-full bg-orange-400 animate-ping opacity-40 scale-150" />
-
-                          <div className="relative h-14 w-14 rounded-full bg-white border-[4px] border-orange-500 shadow-2xl flex items-center justify-center text-orange-500">
-                            <Bike size={18} />
-                          </div>
-                        </div>
-                      </motion.div>
-                    </div>
-                  </GlassCard>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* TIMELINE */}
-
-            <GlassCard darkMode={darkMode}>
-              <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-black">Order Timeline</h2>
+                  <h2 className="text-xl md:text-2xl font-black">
+                    Delivery in 28-35 mins
+                  </h2>
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    Real-time delivery updates
-                  </p>
-                </div>
-
-                <div className="bg-orange-100 text-orange-600 px-3 py-2 rounded-full text-xs font-black">
-                  LIVE
-                </div>
-              </div>
-
-              <div className="mt-7">
-                {steps.map((step, index) => {
-                  const completed = index <= activeStep;
-
-                  const current = index === activeStep;
-
-                  return (
-                    <div
-                      key={index}
-                      className="flex gap-4 relative pb-4 last:pb-0"
-                    >
-                      {index !== steps.length - 1 && (
-                        <div
-                          className={`absolute left-[17px] top-10 w-[3px] h-full rounded-full ${
-                            completed
-                              ? `bg-gradient-to-b ${step.color}`
-                              : "bg-gray-200"
-                          }`}
-                        />
-                      )}
-
-                      <div
-                        className={`relative z-10 h-9 w-9 rounded-full flex items-center justify-center shadow-md ${
-                          completed
-                            ? `bg-gradient-to-r ${step.color} text-white`
-                            : "bg-[#eef3f8] text-gray-500"
-                        }`}
-                      >
-                        {step.icon}
-                      </div>
-
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3
-                            className={`font-black text-[17px] ${
-                              current ? "text-[#ff6b57]" : ""
-                            }`}
-                          >
-                            {step.title}
-                          </h3>
-
-                          {current && (
-                            <div className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-[10px] font-black">
-                              LIVE
-                            </div>
-                          )}
-                        </div>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                          {step.subtitle}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </GlassCard>
-
-            {/* ITEMS */}
-
-            <GlassCard darkMode={darkMode}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-black">Ordered Items</h2>
-
-                  <p className="text-sm text-gray-500 mt-1">
-                    Freshly prepared meals
-                  </p>
-                </div>
-
-                <div className="bg-orange-100 text-orange-600 px-3 py-2 rounded-full text-xs font-black">
-                  {order.items?.length || 0} Items
-                </div>
-              </div>
-
-              <div className="space-y-3 mt-5">
-                {order.items?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="
-                      bg-gradient-to-br
-                      from-white
-                      to-[#fff7f3]
-                      border
-                      border-black/[0.04]
-                      rounded-[24px]
-                      p-3.5
-                      flex
-                      items-center
-                      gap-4
-                    "
+                  <p
+                    className={`mt-1 md:mt-2 text-sm ${
+                      darkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
                   >
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="
-                        h-20
-                        w-20
-                        md:h-24
-                        md:w-24
-                        rounded-2xl
-                        object-cover
-                        shrink-0
-                      "
-                    />
+                    AI optimized delivery route selected
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="
-                          font-black
-                          text-lg
-                          md:text-xl
-                          leading-tight
-                          break-words
-                        "
-                      >
-                        {item.name}
-                      </h3>
+            {/* METHODS */}
 
-                      <p className="text-sm text-gray-500 mt-2">
-                        Qty {item.qty || item.quantity}
-                      </p>
-                    </div>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black">
+                Payment Methods
+              </h2>
 
-                    <h2
-                      className="
-                        text-xl
-                        md:text-2xl
-                        font-black
-                        text-[#ff6b57]
-                        shrink-0
-                      "
-                    >
-                      ₹{item.price}
-                    </h2>
-                  </div>
+              <div className="space-y-4 mt-5">
+                <PaymentMethod
+                  icon={<Smartphone />}
+                  title="UPI Payment"
+                  subtitle="Recommended for fastest checkout"
+                  active={paymentMethod === "UPI"}
+                  onClick={() => setPaymentMethod("UPI")}
+                  darkMode={darkMode}
+                />
+
+                <PaymentMethod
+                  icon={<CreditCard />}
+                  title="Credit / Debit Card"
+                  subtitle="Visa, Mastercard, Rupay"
+                  active={paymentMethod === "CARD"}
+                  onClick={() => setPaymentMethod("CARD")}
+                  darkMode={darkMode}
+                />
+
+                <PaymentMethod
+                  icon={<Banknote />}
+                  title="Cash On Delivery"
+                  subtitle="Pay after delivery"
+                  active={paymentMethod === "COD"}
+                  onClick={() => setPaymentMethod("COD")}
+                  darkMode={darkMode}
+                />
+              </div>
+            </div>
+
+            {/* TIPS */}
+
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black">
+                Add Delivery Tip
+              </h2>
+
+              <div className="flex flex-wrap gap-3 mt-5">
+                {[0, 20, 40, 60, 100].map((tip) => (
+                  <button
+                    key={tip}
+                    onClick={() => setSelectedTip(tip)}
+                    className={`px-5 py-3 rounded-2xl font-black transition-all ${
+                      selectedTip === tip
+                        ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                        : darkMode
+                          ? "bg-[#151d2d]"
+                          : "bg-white border border-gray-100"
+                    }`}
+                  >
+                    {tip === 0 ? "No Tip" : `₹${tip}`}
+                  </button>
                 ))}
               </div>
-            </GlassCard>
+            </div>
           </div>
 
           {/* RIGHT */}
 
-          <div className="space-y-4 xl:sticky xl:top-24 h-fit">
-            <InfoCard
-              darkMode={darkMode}
-              icon={<Clock3 size={18} />}
-              title="Estimated Delivery"
-              value="28-35 mins"
-            />
+          <div className="xl:sticky xl:top-32 h-fit">
+            <div
+              className={`rounded-[28px] md:rounded-[36px] overflow-hidden border shadow-sm ${
+                darkMode
+                  ? "bg-[#151d2d] border-[#232c3f]"
+                  : "bg-white border-gray-100"
+              }`}
+            >
+              <div className="p-5 md:p-6 border-b border-black/5">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center">
+                    <ShieldCheck size={22} />
+                  </div>
 
-            <InfoCard
-              darkMode={darkMode}
-              icon={<ShieldCheck size={18} />}
-              title="Payment Method"
-              value={order.payment || "Google Pay"}
-            />
+                  <div>
+                    <h2 className="font-black text-xl md:text-2xl">
+                      Secure Checkout
+                    </h2>
 
-            <GlassCard darkMode={darkMode}>
-              <div className="flex items-center gap-3">
-                <Sparkles className="text-orange-500" />
-
-                <h2 className="text-2xl font-black">Smart Insights</h2>
+                    <p
+                      className={`text-sm mt-1 ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      AI verified & encrypted
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-3 mt-5">
-                <Insight
-                  title="Fastest route selected"
-                  subtitle="Saved 6 mins delivery time"
-                />
+              <div className="p-5 md:p-6 space-y-4 max-h-[350px] overflow-y-auto">
+                {cartItems.map((item) => (
+                  <div
+                    key={item._id}
+                    className={`flex items-center gap-4 rounded-[22px] p-3 ${
+                      darkMode ? "bg-[#20283b]" : "bg-[#f8fafc]"
+                    }`}
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="h-16 w-16 rounded-2xl object-cover"
+                    />
 
-                <Insight
-                  title="Traffic avoided"
-                  subtitle="AI rerouted automatically"
-                />
+                    <div className="flex-1">
+                      <h3 className="font-black text-sm">{item.name}</h3>
 
-                <Insight
-                  title="Fresh preparation priority"
-                  subtitle="Prepared last for freshness"
-                />
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        Qty {item.quantity}
+                      </p>
+                    </div>
+
+                    <h2 className="font-black">
+                      ₹{item.price * item.quantity}
+                    </h2>
+                  </div>
+                ))}
               </div>
-            </GlassCard>
+
+              <div className="border-t border-black/5 p-5 md:p-6">
+                <BillRow label="Items Total" value={`₹${subtotal}`} />
+
+                <BillRow
+                  label="Delivery Fee"
+                  value={deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                  green={deliveryFee === 0}
+                />
+
+                <BillRow label="Taxes" value={`₹${taxes}`} />
+
+                {selectedTip > 0 && (
+                  <BillRow label="Delivery Tip" value={`₹${selectedTip}`} />
+                )}
+
+                <div className="border-t border-black/5 my-5" />
+
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs text-gray-500">Final Amount</p>
+
+                    <h2 className="text-2xl md:text-3xl font-black mt-1">
+                      To Pay
+                    </h2>
+                  </div>
+
+                  <h2 className="text-[34px] md:text-[42px] font-black tracking-tight text-[#ff6b57]">
+                    ₹{finalTotal}
+                  </h2>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* RESPONSIVE CTA */}
+      {/* PREMIUM CTA */}
 
-      <div
-        className="
-          fixed
-          left-0
-          right-0
-          bottom-[110px]
-          md:bottom-6
-          z-40
-          flex
-          justify-center
-          px-3
-          md:px-6
-          pointer-events-none
-        "
-        style={{
-          paddingBottom: "env(safe-area-inset-bottom)",
-        }}
-      >
-        <div className="w-full max-w-[720px] pointer-events-auto">
+      <div className="fixed left-0 right-0 bottom-[105px] md:bottom-6 z-[120] flex justify-center px-3 md:px-6 pointer-events-none">
+        <div className="w-full max-w-[760px] pointer-events-auto relative">
+          <div className="absolute inset-0 blur-3xl opacity-40 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full" />
+
           <motion.button
             whileTap={{ scale: 0.985 }}
-            onClick={() => navigate("/home")}
-            className="
-              relative
-              overflow-hidden
-              w-full
-              rounded-[24px]
-              md:rounded-[30px]
-              bg-[#0f172a]/95
-              backdrop-blur-2xl
-              border
-              border-white/10
-              shadow-[0_20px_60px_rgba(0,0,0,0.35)]
-            "
+            disabled={processing}
+            onClick={handlePayment}
+            className="relative overflow-hidden w-full rounded-[24px] md:rounded-[34px] bg-gradient-to-r from-orange-500 via-[#ff6b57] to-pink-500 border border-white/20 shadow-[0_20px_70px_rgba(255,110,90,0.45)] backdrop-blur-xl"
           >
-            <div
-              className={`
-                absolute
-                inset-0
-                opacity-20
-                bg-gradient-to-r
-                ${steps[activeStep].color}
-              `}
-            />
+            <div className="absolute inset-0 bg-white/[0.08]" />
 
-            <div
-              className="
-                relative
-                flex
-                items-center
-                justify-between
-                gap-3
-                px-4
-                md:px-6
-                py-4
-                md:py-5
-              "
-            >
-              {/* LEFT */}
+            <div className="relative flex items-center justify-between gap-3 px-4 md:px-7 py-4 md:py-5">
+              <div className="min-w-0 text-left">
+                <p className="text-[9px] md:text-xs uppercase tracking-[0.18em] text-orange-100 font-bold">
+                  Instant confirmation
+                </p>
 
-              <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className={`
-                    h-12
-                    w-12
-                    md:h-14
-                    md:w-14
-                    shrink-0
-                    rounded-2xl
-                    bg-gradient-to-r
-                    ${steps[activeStep].color}
-                    flex
-                    items-center
-                    justify-center
-                    shadow-lg
-                    text-white
-                  `}
-                >
-                  {steps[activeStep].icon}
-                </div>
-
-                <div className="min-w-0 text-left">
-                  <p className="text-[10px] md:text-xs text-gray-400 uppercase tracking-wide">
-                    Delivery Status
-                  </p>
-
-                  <h2
-                    className="
-                      text-sm
-                      md:text-lg
-                      font-black
-                      text-white
-                      truncate
-                      mt-1
-                    "
-                  >
-                    {steps[activeStep].title}
-                  </h2>
-                </div>
+                <h2 className="text-[30px] md:text-[42px] leading-none font-black text-white mt-1">
+                  ₹{finalTotal}
+                </h2>
               </div>
 
-              {/* RIGHT */}
-
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="hidden sm:block text-right">
-                  <p className="text-[10px] text-gray-400">
-                    Continue browsing
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="text-right">
+                  <p className="text-[9px] md:text-xs text-orange-100 font-medium">
+                    Secure AI checkout
                   </p>
 
-                  <h3 className="text-sm md:text-base font-bold text-white mt-1">
-                    Browse Food
+                  <h3 className="text-base md:text-2xl font-black text-white mt-1">
+                    {processing ? "Processing..." : "Pay Now"}
                   </h3>
                 </div>
 
-                <div
-                  className="
-                    h-11
-                    w-11
-                    md:h-12
-                    md:w-12
-                    rounded-2xl
-                    bg-white/10
-                    border
-                    border-white/10
-                    flex
-                    items-center
-                    justify-center
-                    text-white
-                  "
-                >
-                  <ChevronRight size={20} />
-                </div>
+                {!processing && (
+                  <div className="h-12 w-12 md:h-16 md:w-16 rounded-2xl md:rounded-3xl bg-white/20 border border-white/20 backdrop-blur-xl flex items-center justify-center">
+                    <ArrowRight size={24} className="text-white" />
+                  </div>
+                )}
               </div>
             </div>
           </motion.button>
         </div>
       </div>
+
+      {/* CARD MODAL */}
+
+      <AnimatePresence>
+        {showCardModal && (
+          <ModalWrapper>
+            <div
+              className={`rounded-[32px] p-6 ${
+                darkMode ? "bg-[#151d2d]" : "bg-white"
+              }`}
+            >
+              <ModalHeader
+                title="Card Details"
+                subtitle="Secure mock payment"
+                close={() => setShowCardModal(false)}
+              />
+
+              <div className="space-y-4 mt-7">
+                <Input
+                  placeholder="Card Holder Name"
+                  value={cardData.name}
+                  onChange={(e) =>
+                    setCardData({
+                      ...cardData,
+                      name: e.target.value,
+                    })
+                  }
+                  darkMode={darkMode}
+                />
+
+                <Input
+                  placeholder="4111 1111 1111 1111"
+                  value={cardData.number}
+                  onChange={(e) =>
+                    setCardData({
+                      ...cardData,
+                      number: e.target.value,
+                    })
+                  }
+                  darkMode={darkMode}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="MM/YY"
+                    value={cardData.expiry}
+                    onChange={(e) =>
+                      setCardData({
+                        ...cardData,
+                        expiry: e.target.value,
+                      })
+                    }
+                    darkMode={darkMode}
+                  />
+
+                  <Input
+                    placeholder="CVV"
+                    value={cardData.cvv}
+                    onChange={(e) =>
+                      setCardData({
+                        ...cardData,
+                        cvv: e.target.value,
+                      })
+                    }
+                    darkMode={darkMode}
+                  />
+                </div>
+
+                <button
+                  onClick={handleCardPay}
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-md"
+                >
+                  Pay ₹{finalTotal}
+                </button>
+              </div>
+            </div>
+          </ModalWrapper>
+        )}
+      </AnimatePresence>
+
+      {/* UPI MODAL */}
+
+      <AnimatePresence>
+        {showUpiModal && (
+          <ModalWrapper>
+            <div
+              className={`rounded-[32px] p-6 ${
+                darkMode ? "bg-[#151d2d]" : "bg-white"
+              }`}
+            >
+              <ModalHeader
+                title="Choose UPI"
+                subtitle="Fastest payment option"
+                close={() => setShowUpiModal(false)}
+              />
+
+              <div className="space-y-4 mt-7">
+                {upiApps.map((app) => (
+                  <button
+                    key={app.name}
+                    onClick={() => setSelectedUpi(app.name)}
+                    className={`w-full rounded-[24px] p-4 border flex items-center justify-between transition-all ${
+                      selectedUpi === app.name
+                        ? "border-orange-500 bg-orange-50"
+                        : darkMode
+                          ? "border-[#232c3f]"
+                          : "border-gray-100"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={app.image}
+                        alt={app.name}
+                        className="h-12 w-12 object-contain"
+                      />
+
+                      <div className="text-left">
+                        <h3 className="font-black">{app.name}</h3>
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          Instant payment
+                        </p>
+                      </div>
+                    </div>
+
+                    {selectedUpi === app.name && (
+                      <CheckCircle2 className="text-green-500" />
+                    )}
+                  </button>
+                ))}
+
+                <button
+                  onClick={handleUpiPay}
+                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-5 rounded-[24px] font-black text-lg shadow-md"
+                >
+                  Continue with {selectedUpi}
+                </button>
+              </div>
+            </div>
+          </ModalWrapper>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-/* GLASS CARD */
+/* HELPERS */
 
-function GlassCard({ children, darkMode }) {
+function StatCard({ label, value }) {
   return (
-    <div
-      className={`rounded-[28px] p-5 border backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.04)] ${
-        darkMode
-          ? "bg-white/[0.05] border-white/[0.06]"
-          : "bg-white/80 border-black/[0.04]"
-      }`}
-    >
-      {children}
+    <div className="bg-white/15 backdrop-blur-lg px-5 py-4 rounded-2xl min-w-[110px]">
+      <p className="text-orange-100 text-xs">{label}</p>
+
+      <h3 className="font-black text-xl md:text-2xl mt-1">{value}</h3>
     </div>
   );
 }
 
-/* INFO CARD */
-
-function InfoCard({ darkMode, icon, title, value }) {
+function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
   return (
-    <div
-      className={`rounded-[28px] p-5 border backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.04)] ${
-        darkMode
-          ? "bg-white/[0.05] border-white/[0.06]"
-          : "bg-white/80 border-black/[0.04]"
+    <button
+      onClick={onClick}
+      className={`w-full rounded-[24px] md:rounded-[28px] p-4 md:p-5 border transition-all duration-300 ${
+        active
+          ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white border-transparent shadow-lg"
+          : darkMode
+            ? "bg-[#151d2d] border-[#232c3f]"
+            : "bg-white border-gray-100"
       }`}
     >
-      <div className="flex items-center gap-4 min-h-[110px]">
-        <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-100 to-pink-100 text-[#ff6b57] flex items-center justify-center">
-          {icon}
-        </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div
+            className={`h-12 w-12 md:h-14 md:w-14 rounded-2xl flex items-center justify-center ${
+              active ? "bg-white/20" : "bg-[#fff3ef] text-[#ff6b57]"
+            }`}
+          >
+            {icon}
+          </div>
 
-        <div>
-          <p className="text-sm text-gray-500">{title}</p>
+          <div className="text-left">
+            <h2 className="font-black text-base md:text-lg">{title}</h2>
 
-          <h2 className="text-2xl font-black mt-2">{value}</h2>
+            <p
+              className={`text-xs md:text-sm mt-1 ${
+                active ? "text-white/90" : "text-gray-500"
+              }`}
+            >
+              {subtitle}
+            </p>
+          </div>
         </div>
       </div>
+    </button>
+  );
+}
+
+function BillRow({ label, value, green }) {
+  return (
+    <div className="flex justify-between mb-4">
+      <p className="text-gray-500">{label}</p>
+
+      <p className={`font-bold ${green ? "text-green-500" : ""}`}>{value}</p>
     </div>
   );
 }
 
-/* INSIGHT */
-
-function Insight({ title, subtitle }) {
+function Input({ placeholder, value, onChange, darkMode }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-orange-50 to-pink-50 p-4 border border-orange-100">
-      <h3 className="font-bold text-[#ff6b57]">{title}</h3>
-
-      <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
-    </div>
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className={`w-full rounded-[22px] px-5 py-4 outline-none ${
+        darkMode ? "bg-[#20283b] text-white" : "bg-[#f8fafc]"
+      }`}
+    />
   );
 }
 
-/* MINI STAT */
-
-function MiniStat({ title, value }) {
+function ModalHeader({ title, subtitle, close }) {
   return (
-    <div className="bg-white/15 backdrop-blur-lg rounded-2xl px-4 py-3 min-w-[110px]">
-      <p className="text-white/80 text-xs">{title}</p>
+    <>
+      <div className="w-14 h-1.5 bg-gray-300 rounded-full mx-auto mb-6" />
 
-      <h2 className="font-black text-xl mt-2">{value}</h2>
-    </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-black">{title}</h2>
+
+          <p className="text-sm text-gray-500 mt-2">{subtitle}</p>
+        </div>
+
+        <button
+          onClick={close}
+          className="h-11 w-11 rounded-2xl bg-[#f4f4f4] flex items-center justify-center"
+        >
+          <X size={20} />
+        </button>
+      </div>
+    </>
+  );
+}
+
+function ModalWrapper({ children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-end md:items-center justify-center px-3 pb-[170px] md:pb-0"
+    >
+      <motion.div
+        initial={{ y: 300 }}
+        animate={{ y: 0 }}
+        exit={{ y: 300 }}
+        transition={{
+          type: "spring",
+          damping: 22,
+        }}
+        className="w-full max-w-md max-h-[75vh] overflow-y-auto"
+      >
+        {children}
+      </motion.div>
+    </motion.div>
   );
 }
