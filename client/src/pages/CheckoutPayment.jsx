@@ -7,7 +7,6 @@ import {
   CreditCard,
   Banknote,
   ArrowRight,
-  Sparkles,
   ShieldCheck,
   Clock3,
   CheckCircle2,
@@ -69,7 +68,8 @@ export default function CheckoutPayment() {
 
     {
       name: "PhonePe",
-      image: "https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png",
+      image:
+        "https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png",
     },
 
     {
@@ -104,7 +104,9 @@ export default function CheckoutPayment() {
 
           <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
 
-          <p className="mt-3 text-gray-500">Add delicious food to continue</p>
+          <p className="mt-3 text-gray-500">
+            Add delicious food to continue
+          </p>
         </div>
       </div>
     );
@@ -125,13 +127,11 @@ export default function CheckoutPayment() {
   function handlePayment() {
     if (paymentMethod === "CARD") {
       setShowCardModal(true);
-
       return;
     }
 
     if (paymentMethod === "UPI") {
       setShowUpiModal(true);
-
       return;
     }
 
@@ -194,26 +194,24 @@ export default function CheckoutPayment() {
 
   function handleCardPay() {
     setShowCardModal(false);
-
     processSuccess();
   }
 
   function handleUpiPay() {
     setShowUpiModal(false);
-
     processSuccess();
   }
 
   return (
     <div
-      className={`min-h-screen pb-[240px] md:pb-[180px] transition-all duration-300 ${
+      className={`min-h-screen pb-[360px] md:pb-[200px] transition-all duration-300 ${
         darkMode ? "bg-[#0b1220] text-white" : "bg-[#f5f7fb] text-black"
       }`}
     >
       {/* PROCESSING */}
 
       {processing && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[500] flex items-center justify-center">
           <div className="bg-white rounded-[30px] p-8 text-center shadow-2xl">
             <div className="h-16 w-16 mx-auto border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
 
@@ -221,7 +219,9 @@ export default function CheckoutPayment() {
               Processing Payment
             </h2>
 
-            <p className="text-gray-500 mt-2">AI is confirming your order...</p>
+            <p className="text-gray-500 mt-2">
+              AI is confirming your order...
+            </p>
           </div>
         </div>
       )}
@@ -232,20 +232,22 @@ export default function CheckoutPayment() {
         {/* HEADER */}
 
         <div
-          className={`sticky top-0 z-30 pt-6 pb-5 backdrop-blur-xl ${
+          className={`sticky top-0 z-30 pt-5 md:pt-6 pb-5 backdrop-blur-xl ${
             darkMode ? "bg-[#0b1220]/90" : "bg-[#f5f7fb]/90"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-orange-500 font-bold text-sm">
+              <p className="text-orange-500 font-bold text-xs md:text-sm">
                 AI SECURE CHECKOUT
               </p>
 
-              <h1 className="text-4xl md:text-5xl font-black mt-2">Payment</h1>
+              <h1 className="text-4xl md:text-5xl font-black mt-2">
+                Payment
+              </h1>
 
               <p
-                className={`mt-3 text-sm ${
+                className={`mt-2 md:mt-3 text-sm ${
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
@@ -253,30 +255,30 @@ export default function CheckoutPayment() {
               </p>
             </div>
 
-            <div className="h-16 w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
-              <WalletCards size={28} />
+            <div className="h-14 w-14 md:h-16 md:w-16 rounded-3xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center shadow-lg">
+              <WalletCards size={26} />
             </div>
           </div>
         </div>
 
         {/* GRID */}
 
-        <div className="grid xl:grid-cols-[1fr_420px] gap-8 mt-6">
+        <div className="grid xl:grid-cols-[1fr_420px] gap-6 md:gap-8 mt-5 md:mt-6">
           {/* LEFT */}
 
-          <div className="space-y-6">
+          <div className="space-y-5 md:space-y-6">
             {/* HERO */}
 
-            <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-7 md:p-10 shadow-xl text-white">
+            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] bg-gradient-to-br from-orange-500 via-[#ff6b57] to-pink-500 p-5 md:p-10 shadow-xl text-white">
               <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-xs font-black">
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-[10px] md:text-xs font-black">
                   <Zap size={14} />
                   AI Payment Assist
                 </div>
 
-                <h2 className="text-4xl md:text-6xl font-black leading-[1] mt-6">
+                <h2 className="text-3xl md:text-6xl font-black leading-[1] mt-5 md:mt-6">
                   Faster.
                   <br />
                   Smarter.
@@ -284,16 +286,14 @@ export default function CheckoutPayment() {
                   Secure.
                 </h2>
 
-                <p className="mt-5 max-w-xl text-orange-100 leading-7">
+                <p className="mt-4 md:mt-5 max-w-xl text-orange-100 leading-7 text-sm md:text-base">
                   AI recommends the fastest and safest payment method.
                 </p>
 
-                <div className="flex flex-wrap gap-4 mt-8">
+                <div className="flex flex-wrap gap-3 md:gap-4 mt-6 md:mt-8">
                   <StatCard label="Success Rate" value="98%" />
-
                   <StatCard label="Avg Speed" value="2 sec" />
-
-                  <StatCard label="Fraud Protection" value="100%" />
+                  <StatCard label="Protection" value="100%" />
                 </div>
               </div>
             </div>
@@ -301,24 +301,24 @@ export default function CheckoutPayment() {
             {/* ETA */}
 
             <div
-              className={`rounded-[30px] p-6 border ${
+              className={`rounded-[24px] md:rounded-[30px] p-5 md:p-6 border ${
                 darkMode
                   ? "bg-[#151d2d] border-[#232c3f]"
                   : "bg-white border-gray-100"
               }`}
             >
-              <div className="flex items-center gap-5">
-                <div className="h-16 w-16 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center">
-                  <Clock3 size={28} />
+              <div className="flex items-center gap-4">
+                <div className="h-14 w-14 md:h-16 md:w-16 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center">
+                  <Clock3 size={24} />
                 </div>
 
                 <div>
-                  <h2 className="text-2xl font-black">
+                  <h2 className="text-xl md:text-2xl font-black">
                     Delivery in 28-35 mins
                   </h2>
 
                   <p
-                    className={`mt-2 text-sm ${
+                    className={`mt-1 md:mt-2 text-sm ${
                       darkMode ? "text-gray-400" : "text-gray-500"
                     }`}
                   >
@@ -331,7 +331,9 @@ export default function CheckoutPayment() {
             {/* METHODS */}
 
             <div>
-              <h2 className="text-3xl font-black">Payment Methods</h2>
+              <h2 className="text-2xl md:text-3xl font-black">
+                Payment Methods
+              </h2>
 
               <div className="space-y-4 mt-5">
                 <PaymentMethod
@@ -362,26 +364,54 @@ export default function CheckoutPayment() {
                 />
               </div>
             </div>
+
+            {/* TIPS */}
+
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black">
+                Add Delivery Tip
+              </h2>
+
+              <div className="flex flex-wrap gap-3 mt-5">
+                {[0, 20, 40, 60, 100].map((tip) => (
+                  <button
+                    key={tip}
+                    onClick={() => setSelectedTip(tip)}
+                    className={`px-5 py-3 rounded-2xl font-black transition-all ${
+                      selectedTip === tip
+                        ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                        : darkMode
+                          ? "bg-[#151d2d]"
+                          : "bg-white border border-gray-100"
+                    }`}
+                  >
+                    {tip === 0 ? "No Tip" : `₹${tip}`}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* RIGHT */}
 
           <div className="xl:sticky xl:top-32 h-fit">
             <div
-              className={`rounded-[36px] overflow-hidden border shadow-sm ${
+              className={`rounded-[28px] md:rounded-[36px] overflow-hidden border shadow-sm ${
                 darkMode
                   ? "bg-[#151d2d] border-[#232c3f]"
                   : "bg-white border-gray-100"
               }`}
             >
-              <div className="p-6 border-b border-black/5">
+              <div className="p-5 md:p-6 border-b border-black/5">
                 <div className="flex items-center gap-4">
                   <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center">
                     <ShieldCheck size={22} />
                   </div>
 
                   <div>
-                    <h2 className="font-black text-2xl">Secure Checkout</h2>
+                    <h2 className="font-black text-xl md:text-2xl">
+                      Secure Checkout
+                    </h2>
 
                     <p
                       className={`text-sm mt-1 ${
@@ -394,11 +424,11 @@ export default function CheckoutPayment() {
                 </div>
               </div>
 
-              <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto">
+              <div className="p-5 md:p-6 space-y-4 max-h-[350px] overflow-y-auto">
                 {cartItems.map((item) => (
                   <div
                     key={item._id}
-                    className={`flex items-center gap-4 rounded-[24px] p-3 ${
+                    className={`flex items-center gap-4 rounded-[22px] p-3 ${
                       darkMode ? "bg-[#20283b]" : "bg-[#f8fafc]"
                     }`}
                   >
@@ -427,7 +457,7 @@ export default function CheckoutPayment() {
                 ))}
               </div>
 
-              <div className="border-t border-black/5 p-6">
+              <div className="border-t border-black/5 p-5 md:p-6">
                 <BillRow label="Items Total" value={`₹${subtotal}`} />
 
                 <BillRow
@@ -448,10 +478,12 @@ export default function CheckoutPayment() {
                   <div>
                     <p className="text-xs text-gray-500">Final Amount</p>
 
-                    <h2 className="text-3xl font-black mt-1">To Pay</h2>
+                    <h2 className="text-2xl md:text-3xl font-black mt-1">
+                      To Pay
+                    </h2>
                   </div>
 
-                  <h2 className="text-[42px] font-black tracking-tight text-[#ff6b57]">
+                  <h2 className="text-[34px] md:text-[42px] font-black tracking-tight text-[#ff6b57]">
                     ₹{finalTotal}
                   </h2>
                 </div>
@@ -461,111 +493,60 @@ export default function CheckoutPayment() {
         </div>
       </div>
 
-      {/* FIXED CTA */}
+      {/* PREMIUM CTA */}
 
-      <div
-        className="
-    fixed
-    bottom-[100px]
-    md:bottom-6
-    left-0
-    right-0
-    z-[999]
-    px-4
-  "
-      >
-        <div className="max-w-2xl mx-auto">
-          {/* GLOW */}
+      <div className="fixed left-0 right-0 bottom-[105px] md:bottom-6 z-[120] flex justify-center px-3 md:px-6 pointer-events-none">
+        <div className="w-full max-w-[760px] pointer-events-auto relative">
+          <div className="absolute inset-0 blur-3xl opacity-40 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full" />
 
-          <div className="absolute inset-0 blur-3xl bg-orange-500/30 rounded-full scale-90" />
-
-          <button
+          <motion.button
+            whileTap={{ scale: 0.985 }}
             disabled={processing}
             onClick={handlePayment}
-            className="
-        relative
-        w-full
-        overflow-hidden
-        rounded-[28px]
-        md:rounded-[34px]
-        bg-gradient-to-r
-        from-orange-500
-        via-[#ff6b57]
-        to-pink-500
-        px-5
-        md:px-7
-        py-4
-        md:py-5
-        shadow-[0_20px_60px_rgba(255,110,90,0.45)]
-        border
-        border-white/20
-        backdrop-blur-xl
-      "
+            className="relative overflow-hidden w-full rounded-[24px] md:rounded-[34px] bg-gradient-to-r from-orange-500 via-[#ff6b57] to-pink-500 border border-white/20 shadow-[0_20px_70px_rgba(255,110,90,0.45)] backdrop-blur-xl"
           >
-            {/* SHINE */}
+            <div className="absolute inset-0 bg-white/[0.08]" />
 
-            <div className="absolute inset-0 bg-white/10" />
-
-            {/* CONTENT */}
-
-            <div className="relative flex items-center justify-between gap-4">
-              {/* LEFT */}
-
-              <div className="text-left min-w-0">
-                <p className="text-[10px] md:text-xs text-orange-100 font-semibold tracking-wide uppercase">
+            <div className="relative flex items-center justify-between gap-3 px-4 md:px-7 py-4 md:py-5">
+              <div className="min-w-0 text-left">
+                <p className="text-[9px] md:text-xs uppercase tracking-[0.18em] text-orange-100 font-bold">
                   Instant confirmation
                 </p>
 
-                <h2 className="text-[28px] md:text-[36px] font-black mt-1 text-white leading-none">
+                <h2 className="text-[30px] md:text-[42px] leading-none font-black text-white mt-1">
                   ₹{finalTotal}
                 </h2>
               </div>
 
-              {/* RIGHT */}
-
               <div className="flex items-center gap-3 shrink-0">
                 <div className="text-right">
-                  <p className="text-[10px] md:text-xs text-orange-100 font-medium">
+                  <p className="text-[9px] md:text-xs text-orange-100 font-medium">
                     Secure AI checkout
                   </p>
 
-                  <h3 className="text-base md:text-xl font-black text-white mt-1">
+                  <h3 className="text-base md:text-2xl font-black text-white mt-1">
                     {processing ? "Processing..." : "Pay Now"}
                   </h3>
                 </div>
 
                 {!processing && (
-                  <div
-                    className="
-                h-12
-                w-12
-                md:h-14
-                md:w-14
-                rounded-2xl
-                bg-white/20
-                border
-                border-white/20
-                flex
-                items-center
-                justify-center
-                backdrop-blur-xl
-              "
-                  >
-                    <ArrowRight size={22} className="text-white" />
+                  <div className="h-12 w-12 md:h-16 md:w-16 rounded-2xl md:rounded-3xl bg-white/20 border border-white/20 backdrop-blur-xl flex items-center justify-center">
+                    <ArrowRight size={24} className="text-white" />
                   </div>
                 )}
               </div>
             </div>
-          </button>
+          </motion.button>
         </div>
       </div>
+
       {/* CARD MODAL */}
 
       <AnimatePresence>
         {showCardModal && (
           <ModalWrapper>
             <div
-              className={`rounded-t-[40px] p-6 ${
+              className={`rounded-[32px] p-6 ${
                 darkMode ? "bg-[#151d2d]" : "bg-white"
               }`}
             >
@@ -644,7 +625,7 @@ export default function CheckoutPayment() {
         {showUpiModal && (
           <ModalWrapper>
             <div
-              className={`rounded-t-[40px] p-6 ${
+              className={`rounded-[32px] p-6 ${
                 darkMode ? "bg-[#151d2d]" : "bg-white"
               }`}
             >
@@ -708,19 +689,26 @@ export default function CheckoutPayment() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="bg-white/15 backdrop-blur-lg px-5 py-4 rounded-2xl min-w-[120px]">
+    <div className="bg-white/15 backdrop-blur-lg px-5 py-4 rounded-2xl min-w-[110px]">
       <p className="text-orange-100 text-xs">{label}</p>
 
-      <h3 className="font-black text-2xl mt-1">{value}</h3>
+      <h3 className="font-black text-xl md:text-2xl mt-1">{value}</h3>
     </div>
   );
 }
 
-function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
+function PaymentMethod({
+  icon,
+  title,
+  subtitle,
+  active,
+  onClick,
+  darkMode,
+}) {
   return (
     <button
       onClick={onClick}
-      className={`w-full rounded-[28px] p-5 border transition-all duration-300 ${
+      className={`w-full rounded-[24px] md:rounded-[28px] p-4 md:p-5 border transition-all duration-300 ${
         active
           ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white border-transparent shadow-lg"
           : darkMode
@@ -731,7 +719,7 @@ function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div
-            className={`h-14 w-14 rounded-2xl flex items-center justify-center ${
+            className={`h-12 w-12 md:h-14 md:w-14 rounded-2xl flex items-center justify-center ${
               active ? "bg-white/20" : "bg-[#fff3ef] text-[#ff6b57]"
             }`}
           >
@@ -739,10 +727,10 @@ function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
           </div>
 
           <div className="text-left">
-            <h2 className="font-black text-lg">{title}</h2>
+            <h2 className="font-black text-base md:text-lg">{title}</h2>
 
             <p
-              className={`text-sm mt-1 ${
+              className={`text-xs md:text-sm mt-1 ${
                 active ? "text-white/90" : "text-gray-500"
               }`}
             >
@@ -760,7 +748,9 @@ function BillRow({ label, value, green }) {
     <div className="flex justify-between mb-4">
       <p className="text-gray-500">{label}</p>
 
-      <p className={`font-bold ${green ? "text-green-500" : ""}`}>{value}</p>
+      <p className={`font-bold ${green ? "text-green-500" : ""}`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -808,7 +798,7 @@ function ModalWrapper({ children }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/40 z-[100] flex items-end justify-center px-3"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-end md:items-center justify-center px-3 pb-[170px] md:pb-0"
     >
       <motion.div
         initial={{ y: 300 }}
@@ -818,7 +808,7 @@ function ModalWrapper({ children }) {
           type: "spring",
           damping: 22,
         }}
-        className="w-full max-w-md"
+        className="w-full max-w-md max-h-[75vh] overflow-y-auto"
       >
         {children}
       </motion.div>
