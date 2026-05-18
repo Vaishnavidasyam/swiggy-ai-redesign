@@ -93,7 +93,7 @@ export default function RestaurantList() {
 
   return (
     <div
-      className={`min-h-screen pb-32 transition-all duration-500 ${
+      className={`min-h-screen pb-32 overflow-x-hidden transition-all duration-500 ${
         darkMode
           ? "bg-gradient-to-br from-[#071120] via-[#0b1220] to-[#111827]"
           : "bg-gradient-to-br from-[#fff8f5] via-[#ffffff] to-[#f5f7fb]"
@@ -101,10 +101,10 @@ export default function RestaurantList() {
     >
       {/* CONTAINER */}
 
-      <div className="w-full max-w-[1320px] mx-auto px-4 md:px-5 xl:px-6">
+      <div className="w-full max-w-[1320px] mx-auto px-3 sm:px-4 md:px-5 xl:px-6">
         {/* HERO */}
 
-        <div className="pt-5">
+        <div className="pt-4 sm:pt-5">
           <motion.div
             initial={{
               opacity: 0,
@@ -120,69 +120,74 @@ export default function RestaurantList() {
             className="
               relative
               overflow-hidden
-              rounded-[34px]
+              rounded-[30px]
+              sm:rounded-[34px]
               bg-gradient-to-br
               from-[#ff7a45]
               via-[#ff5e62]
               to-[#ff3d8d]
-              p-5
-              sm:p-6
+              p-4
+              sm:p-5
               lg:p-8
               shadow-[0_20px_50px_rgba(255,110,90,0.22)]
             "
           >
-            {/* BG */}
+            {/* GLOW */}
 
-            <div className="absolute -top-24 -right-20 h-[260px] w-[260px] rounded-full bg-white/10 blur-3xl" />
+            <div className="absolute -top-20 -right-20 h-[220px] w-[220px] rounded-full bg-white/10 blur-3xl" />
 
-            {/* MOBILE IMAGE */}
+            {/* MOBILE CARD */}
 
-            <div className="relative z-10 lg:hidden mb-5">
-              <div className="relative rounded-[28px] bg-white/10 backdrop-blur-xl p-3 border border-white/10">
+            <div className="lg:hidden relative z-10 mb-5">
+              <div className="relative rounded-[24px] bg-white/10 backdrop-blur-xl border border-white/10 p-3 overflow-hidden">
+                {/* IMAGE */}
+
                 <img
                   src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"
                   alt="Food"
-                  className="h-[220px] w-full object-cover rounded-[22px]"
+                  className="w-full h-[200px] object-cover rounded-[20px]"
                 />
 
-                {/* TRENDING */}
+                {/* BADGE */}
 
-                <div className="absolute top-6 left-6 bg-white text-[#ff6b57] px-3 py-2 rounded-full text-[10px] font-black shadow-lg">
+                <div className="absolute top-5 left-5 bg-white text-[#ff6b57] px-3 py-2 rounded-full text-[10px] font-black shadow-lg">
                   🔥 Trending
                 </div>
 
-                {/* AI CARD */}
+                {/* FLOAT CARD */}
 
-                <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-[90%] bg-white rounded-[24px] p-4 shadow-xl">
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-[88%] rounded-[22px] bg-white/95 backdrop-blur-xl p-3 shadow-xl">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-[#111827] text-lg font-black">
+                      <h2 className="text-[#111827] text-base font-black">
                         AI Picks
                       </h2>
 
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-[11px] text-gray-500 mt-1">
                         Personalized for you
                       </p>
                     </div>
 
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center">
-                      <ArrowRight size={18} />
+                    <div className="h-9 w-9 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white flex items-center justify-center">
+                      <ArrowRight size={16} />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 mt-4">
+                  {/* MINI */}
+
+                  <div className="grid grid-cols-3 gap-2 mt-3">
                     <MiniInfo
-                      icon={<Star size={12} />}
+                      icon={<Star size={11} />}
                       text="4.9"
                     />
 
                     <MiniInfo
-                      icon={<Clock3 size={12} />}
+                      icon={<Clock3 size={11} />}
                       text="20m"
                     />
 
                     <MiniInfo
-                      icon={<TrendingUp size={12} />}
+                      icon={<TrendingUp size={11} />}
                       text="#1"
                     />
                   </div>
@@ -192,47 +197,103 @@ export default function RestaurantList() {
 
             {/* GRID */}
 
-            <div className="relative z-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center">
+            <div className="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
               {/* LEFT */}
 
-              <div className="pt-8 lg:pt-0">
+              <div>
                 {/* TAG */}
 
-                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-lg px-4 py-2 rounded-full text-white text-[11px] font-black tracking-wide">
+                <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-lg px-4 py-2 rounded-full text-white text-[10px] sm:text-[11px] font-black tracking-wide">
                   <Sparkles size={13} />
                   AI PERSONALIZED DISCOVERY
                 </div>
 
                 {/* TITLE */}
 
-                <h1 className="mt-5 text-[42px] sm:text-[56px] lg:text-[58px] font-black leading-[0.96] text-white tracking-[-2px]">
+                <h1
+                  className="
+                    mt-5
+                    text-[42px]
+                    leading-[0.92]
+                    sm:text-[58px]
+                    lg:text-[64px]
+                    font-black
+                    text-white
+                    tracking-[-2px]
+                    break-words
+                  "
+                >
                   {mood.title}
                 </h1>
 
-                {/* SUBTITLE */}
+                {/* SUB */}
 
-                <p className="mt-4 text-sm sm:text-base leading-7 text-orange-50/90 max-w-2xl">
+                <p className="mt-4 text-[14px] sm:text-[16px] leading-7 text-orange-50/90 max-w-2xl">
                   {mood.subtitle}
                 </p>
 
                 {/* SEARCH */}
 
-                <div className="mt-6 max-w-2xl">
-                  <div className="h-[60px] rounded-[22px] bg-white/95 backdrop-blur-xl flex items-center px-4 shadow-xl">
-                    <Search
-                      size={18}
-                      className="text-gray-500"
-                    />
+                <div className="mt-6">
+                  <div
+                    className="
+                      rounded-[22px]
+                      bg-white/95
+                      backdrop-blur-xl
+                      p-2
+                      shadow-xl
+                      flex
+                      flex-col
+                      sm:flex-row
+                      gap-2
+                    "
+                  >
+                    {/* INPUT */}
 
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search restaurants or dishes"
-                      className="bg-transparent outline-none flex-1 px-3 text-gray-700 placeholder:text-gray-400 text-[14px]"
-                    />
+                    <div className="flex items-center flex-1 px-3 h-[52px]">
+                      <Search
+                        size={18}
+                        className="text-gray-500"
+                      />
 
-                    <button className="h-10 px-4 sm:px-5 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white text-sm font-black shadow-lg">
+                      <input
+                        type="text"
+                        value={search}
+                        onChange={(e) =>
+                          setSearch(e.target.value)
+                        }
+                        placeholder="Search restaurants or dishes"
+                        className="
+                          bg-transparent
+                          outline-none
+                          flex-1
+                          px-3
+                          text-gray-700
+                          placeholder:text-gray-400
+                          text-[14px]
+                          w-full
+                        "
+                      />
+                    </div>
+
+                    {/* BTN */}
+
+                    <button
+                      className="
+                        h-[50px]
+                        sm:h-[52px]
+                        px-5
+                        rounded-[18px]
+                        bg-gradient-to-r
+                        from-orange-500
+                        to-pink-500
+                        text-white
+                        text-sm
+                        font-black
+                        shadow-lg
+                        whitespace-nowrap
+                      "
+                    >
                       Search
                     </button>
                   </div>
@@ -240,7 +301,7 @@ export default function RestaurantList() {
 
                 {/* STATS */}
 
-                <div className="grid grid-cols-3 gap-3 mt-6">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-5">
                   <HeroStat
                     title="Restaurants"
                     value="500+"
@@ -269,12 +330,12 @@ export default function RestaurantList() {
                     duration: 4,
                     repeat: Infinity,
                   }}
-                  className="relative w-[280px] rounded-[28px] bg-white/15 backdrop-blur-2xl border border-white/10 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.18)]"
+                  className="relative w-[300px] rounded-[30px] bg-white/15 backdrop-blur-2xl border border-white/10 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.18)]"
                 >
                   <img
                     src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"
                     alt="Food"
-                    className="h-[200px] w-full object-cover rounded-[24px]"
+                    className="h-[220px] w-full object-cover rounded-[24px]"
                   />
 
                   <div className="absolute top-6 left-6 bg-white text-[#ff6b57] px-3 py-2 rounded-full text-[10px] font-black shadow-lg">
@@ -323,7 +384,7 @@ export default function RestaurantList() {
 
         {/* TOP BAR */}
 
-        <div className="mt-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="mt-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* LOCATION */}
 
           <div
@@ -394,8 +455,6 @@ export default function RestaurantList() {
             </div>
           </div>
 
-          {/* LIST */}
-
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
             <CategoryCard
               active={activeCategory === "All"}
@@ -453,18 +512,43 @@ export default function RestaurantList() {
             </div>
           </div>
 
-          {/* GRID */}
+          {/* LOADING */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {filteredRestaurants.map(
-              (restaurant) => (
-                <RestaurantCard
-                  key={restaurant._id}
-                  restaurant={restaurant}
-                />
-              ),
-            )}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className={`rounded-[28px] overflow-hidden animate-pulse ${
+                    darkMode
+                      ? "bg-[#151d2d]"
+                      : "bg-white"
+                  }`}
+                >
+                  <div className="h-56 bg-gray-300" />
+
+                  <div className="p-4">
+                    <div className="h-5 w-1/2 bg-gray-300 rounded-full" />
+
+                    <div className="h-4 w-full bg-gray-200 rounded-full mt-4" />
+
+                    <div className="h-4 w-2/3 bg-gray-200 rounded-full mt-2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {filteredRestaurants.map(
+                (restaurant) => (
+                  <RestaurantCard
+                    key={restaurant._id}
+                    restaurant={restaurant}
+                  />
+                ),
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -475,12 +559,12 @@ export default function RestaurantList() {
 
 function HeroStat({ title, value }) {
   return (
-    <div className="bg-white/15 backdrop-blur-xl rounded-2xl px-4 py-3 border border-white/10">
-      <p className="text-orange-100 text-[11px]">
+    <div className="bg-white/15 backdrop-blur-xl rounded-2xl px-3 py-3 border border-white/10 min-w-0">
+      <p className="text-orange-100 text-[10px] sm:text-[11px] truncate">
         {title}
       </p>
 
-      <h2 className="text-white text-2xl font-black mt-1">
+      <h2 className="text-white text-[28px] sm:text-3xl font-black mt-1 truncate">
         {value}
       </h2>
     </div>
@@ -491,7 +575,7 @@ function HeroStat({ title, value }) {
 
 function MiniInfo({ icon, text }) {
   return (
-    <div className="bg-[#fff3ef] rounded-xl h-11 flex items-center justify-center gap-2 text-[#ff6b57] text-sm font-black">
+    <div className="bg-[#fff3ef] rounded-xl h-10 flex items-center justify-center gap-1 text-[#ff6b57] text-xs font-black">
       {icon}
 
       {text}
