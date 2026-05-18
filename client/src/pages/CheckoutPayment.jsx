@@ -104,9 +104,7 @@ export default function CheckoutPayment() {
 
           <h1 className="text-4xl font-black mt-8">Cart Empty</h1>
 
-          <p className="mt-3 text-gray-500">
-            Add delicious food to continue
-          </p>
+          <p className="mt-3 text-gray-500">Add delicious food to continue</p>
         </div>
       </div>
     );
@@ -223,9 +221,7 @@ export default function CheckoutPayment() {
               Processing Payment
             </h2>
 
-            <p className="text-gray-500 mt-2">
-              AI is confirming your order...
-            </p>
+            <p className="text-gray-500 mt-2">AI is confirming your order...</p>
           </div>
         </div>
       )}
@@ -246,9 +242,7 @@ export default function CheckoutPayment() {
                 AI SECURE CHECKOUT
               </p>
 
-              <h1 className="text-4xl md:text-5xl font-black mt-2">
-                Payment
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-black mt-2">Payment</h1>
 
               <p
                 className={`mt-3 text-sm ${
@@ -387,9 +381,7 @@ export default function CheckoutPayment() {
                   </div>
 
                   <div>
-                    <h2 className="font-black text-2xl">
-                      Secure Checkout
-                    </h2>
+                    <h2 className="font-black text-2xl">Secure Checkout</h2>
 
                     <p
                       className={`text-sm mt-1 ${
@@ -473,59 +465,93 @@ export default function CheckoutPayment() {
 
       <div
         className="
-          fixed
-          bottom-[95px]
-          md:bottom-5
-          left-0
-          right-0
-          z-50
-          px-4
-        "
+    fixed
+    bottom-[100px]
+    md:bottom-6
+    left-0
+    right-0
+    z-[999]
+    px-4
+  "
       >
         <div className="max-w-2xl mx-auto">
+          {/* GLOW */}
+
+          <div className="absolute inset-0 blur-3xl bg-orange-500/30 rounded-full scale-90" />
+
           <button
             disabled={processing}
             onClick={handlePayment}
             className="
-              w-full
-              rounded-[26px]
-              md:rounded-[30px]
-              px-5
-              md:px-6
-              py-4
-              md:py-5
-              bg-gradient-to-r
-              from-orange-500
-              to-pink-500
-              text-white
-              shadow-[0_15px_45px_rgba(255,120,100,0.35)]
-            "
+        relative
+        w-full
+        overflow-hidden
+        rounded-[28px]
+        md:rounded-[34px]
+        bg-gradient-to-r
+        from-orange-500
+        via-[#ff6b57]
+        to-pink-500
+        px-5
+        md:px-7
+        py-4
+        md:py-5
+        shadow-[0_20px_60px_rgba(255,110,90,0.45)]
+        border
+        border-white/20
+        backdrop-blur-xl
+      "
           >
-            <div className="flex items-center justify-between gap-4">
+            {/* SHINE */}
+
+            <div className="absolute inset-0 bg-white/10" />
+
+            {/* CONTENT */}
+
+            <div className="relative flex items-center justify-between gap-4">
+              {/* LEFT */}
+
               <div className="text-left min-w-0">
-                <p className="text-[10px] md:text-xs text-orange-100">
+                <p className="text-[10px] md:text-xs text-orange-100 font-semibold tracking-wide uppercase">
                   Instant confirmation
                 </p>
 
-                <h2 className="text-2xl md:text-3xl font-black mt-1 truncate">
+                <h2 className="text-[28px] md:text-[36px] font-black mt-1 text-white leading-none">
                   ₹{finalTotal}
                 </h2>
               </div>
 
+              {/* RIGHT */}
+
               <div className="flex items-center gap-3 shrink-0">
                 <div className="text-right">
-                  <p className="text-[10px] md:text-xs text-orange-100">
-                    Secure payment
+                  <p className="text-[10px] md:text-xs text-orange-100 font-medium">
+                    Secure AI checkout
                   </p>
 
-                  <h3 className="text-sm md:text-lg font-black mt-1">
+                  <h3 className="text-base md:text-xl font-black text-white mt-1">
                     {processing ? "Processing..." : "Pay Now"}
                   </h3>
                 </div>
 
                 {!processing && (
-                  <div className="h-10 w-10 md:h-12 md:w-12 rounded-2xl bg-white/20 flex items-center justify-center">
-                    <ArrowRight size={20} className="text-white" />
+                  <div
+                    className="
+                h-12
+                w-12
+                md:h-14
+                md:w-14
+                rounded-2xl
+                bg-white/20
+                border
+                border-white/20
+                flex
+                items-center
+                justify-center
+                backdrop-blur-xl
+              "
+                  >
+                    <ArrowRight size={22} className="text-white" />
                   </div>
                 )}
               </div>
@@ -533,7 +559,6 @@ export default function CheckoutPayment() {
           </button>
         </div>
       </div>
-
       {/* CARD MODAL */}
 
       <AnimatePresence>
@@ -691,14 +716,7 @@ function StatCard({ label, value }) {
   );
 }
 
-function PaymentMethod({
-  icon,
-  title,
-  subtitle,
-  active,
-  onClick,
-  darkMode,
-}) {
+function PaymentMethod({ icon, title, subtitle, active, onClick, darkMode }) {
   return (
     <button
       onClick={onClick}
@@ -742,9 +760,7 @@ function BillRow({ label, value, green }) {
     <div className="flex justify-between mb-4">
       <p className="text-gray-500">{label}</p>
 
-      <p className={`font-bold ${green ? "text-green-500" : ""}`}>
-        {value}
-      </p>
+      <p className={`font-bold ${green ? "text-green-500" : ""}`}>{value}</p>
     </div>
   );
 }
